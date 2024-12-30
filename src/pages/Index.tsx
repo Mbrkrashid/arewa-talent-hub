@@ -15,6 +15,7 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -25,10 +26,16 @@ const Index = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (_event === 'SIGNED_IN') {
+        toast({
+          title: "Welcome! 🎉",
+          description: "Successfully signed in",
+        });
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [toast]);
 
   const handleVote = () => {
     if (!session) {
@@ -72,7 +79,19 @@ const Index = () => {
                 },
               },
             }}
+            providers={[]}
+            onError={(error) => {
+              console.error('Auth error:', error);
+              toast({
+                title: "Authentication Error",
+                description: error.message,
+                variant: "destructive",
+              });
+            }}
           />
+          {authError && (
+            <p className="mt-4 text-sm text-red-500 text-center">{authError}</p>
+          )}
         </div>
       </div>
     );
