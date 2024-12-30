@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Upload, Gamepad2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { SponsoredAds } from "@/components/SponsoredAds";
@@ -61,7 +62,7 @@ const Index = () => {
           <Auth 
             supabaseClient={supabase}
             appearance={{
-              theme: 'dark',
+              theme: ThemeSupa,
               variables: {
                 default: {
                   colors: {
