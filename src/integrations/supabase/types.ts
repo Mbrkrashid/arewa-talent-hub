@@ -248,6 +248,44 @@ export type Database = {
           },
         ]
       }
+      judges: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          expertise: string | null
+          id: string
+          profile_id: string | null
+          rating: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          expertise?: string | null
+          id?: string
+          profile_id?: string | null
+          rating?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          expertise?: string | null
+          id?: string
+          profile_id?: string | null
+          rating?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judges_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_methods: {
         Row: {
           created_at: string | null
@@ -391,6 +429,84 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          created_at: string | null
+          id: string
+          referred_id: string | null
+          referrer_id: string | null
+          tokens_earned: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          referred_id?: string | null
+          referrer_id?: string | null
+          tokens_earned?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          referred_id?: string | null
+          referrer_id?: string | null
+          tokens_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sponsored_ads: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          link_url: string | null
+          start_date: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          link_url?: string | null
+          start_date?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          link_url?: string | null
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       support_chat_history: {
         Row: {
           created_at: string | null
@@ -450,6 +566,44 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      token_wallets: {
+        Row: {
+          balance: number | null
+          created_at: string | null
+          id: string
+          total_earned: number | null
+          total_spent: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          total_earned?: number | null
+          total_spent?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          total_earned?: number | null
+          total_spent?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "token_wallets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {

@@ -4,16 +4,78 @@ import { TokenBalance } from "@/components/TokenBalance";
 import { Button } from "@/components/ui/button";
 import { Upload, Gamepad2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Auth } from "@supabase/auth-ui-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { SponsoredAds } from "@/components/SponsoredAds";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleVote = () => {
+    if (!session) {
+      toast({
+        title: "Please sign in",
+        description: "You need to be signed in to vote",
+      });
+      return;
+    }
+    
     toast({
       title: "Vote Recorded! 🎉",
       description: "You've used 1 token to vote for this talent. Keep supporting!",
     });
   };
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex items-center justify-center">
+        <div className="w-full max-w-md p-8 bg-black/50 rounded-lg border border-primary/20">
+          <div className="flex items-center gap-2 mb-6 justify-center">
+            <Gamepad2 className="h-8 w-8 text-primary animate-pulse" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Arewa Talent Hub
+            </h1>
+          </div>
+          <div className="text-center mb-8">
+            <h2 className="text-xl font-semibold text-white mb-2">Win ₦2,000,000!</h2>
+            <p className="text-gray-400">Join the biggest talent hunt in Northern Nigeria</p>
+          </div>
+          <Auth 
+            supabaseClient={supabase}
+            appearance={{
+              theme: 'dark',
+              variables: {
+                default: {
+                  colors: {
+                    brand: '#7C3AED',
+                    brandAccent: '#6D28D9',
+                  },
+                },
+              },
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   const mockVideos = [
     {
@@ -52,9 +114,19 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-4">
               <TokenBalance />
-              <Button className="bg-primary hover:bg-primary/90 animate-pulse">
+              <Button 
+                className="bg-primary hover:bg-primary/90 animate-pulse"
+                onClick={() => navigate("/upload")}
+              >
                 <Upload className="h-4 w-4 mr-2" />
                 Share Your Talent
+              </Button>
+              <Button
+                variant="outline"
+                className="border-primary/20"
+                onClick={() => supabase.auth.signOut()}
+              >
+                Sign Out
               </Button>
             </div>
           </div>
@@ -62,6 +134,8 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        <SponsoredAds />
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <h2 className="text-xl font-semibold mb-6 text-white/90">Featured Talents</h2>
