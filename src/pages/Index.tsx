@@ -80,6 +80,7 @@ const Index = () => {
               },
             }}
             providers={[]}
+            redirectTo={window.location.origin}
           />
           {authError && (
             <p className="mt-4 text-sm text-red-500 text-center">{authError}</p>
