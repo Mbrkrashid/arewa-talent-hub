@@ -80,15 +80,6 @@ const Index = () => {
               },
             }}
             providers={[]}
-            onError={(error) => {
-              console.error('Auth error:', error);
-              setAuthError(error.message);
-              toast({
-                title: "Authentication Error",
-                description: error.message,
-                variant: "destructive",
-              });
-            }}
           />
           {authError && (
             <p className="mt-4 text-sm text-red-500 text-center">{authError}</p>
