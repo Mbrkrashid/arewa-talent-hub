@@ -32,6 +32,12 @@ const Index = () => {
           description: "Successfully signed in",
         });
       }
+      if (_event === 'SIGNED_OUT') {
+        toast({
+          title: "Goodbye! 👋",
+          description: "Successfully signed out",
+        });
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -81,6 +87,26 @@ const Index = () => {
             }}
             providers={[]}
             redirectTo={window.location.origin}
+            localization={{
+              variables: {
+                sign_in: {
+                  email_label: 'Email',
+                  password_label: 'Password',
+                  button_label: 'Sign in',
+                  loading_button_label: 'Signing in...',
+                  social_provider_text: 'Sign in with {{provider}}',
+                  link_text: "Don't have an account? Sign up",
+                },
+                sign_up: {
+                  email_label: 'Email',
+                  password_label: 'Password',
+                  button_label: 'Sign up',
+                  loading_button_label: 'Signing up...',
+                  social_provider_text: 'Sign up with {{provider}}',
+                  link_text: 'Already have an account? Sign in',
+                },
+              },
+            }}
           />
           {authError && (
             <p className="mt-4 text-sm text-red-500 text-center">{authError}</p>
