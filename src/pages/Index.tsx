@@ -42,16 +42,10 @@ const Index = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        console.log('Fetching videos...');
+        console.log('Fetching videos from Supabase...');
         const { data, error } = await supabase
           .from('video_content')
-          .select(`
-            id,
-            title,
-            thumbnail_url,
-            likes_count,
-            vendor_id
-          `)
+          .select('*')
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -60,20 +54,20 @@ const Index = () => {
           throw error;
         }
         
-        console.log('Fetched videos:', data);
+        console.log('Successfully fetched videos:', data);
         
         const videosWithLevel = data?.map(video => ({
           ...video,
           level: Math.floor((video.likes_count || 0) / 100) + 1,
-          vendors: { business_name: "Anonymous" } // Default vendor name
+          vendors: { business_name: "Anonymous" }
         })) || [];
         
         setVideos(videosWithLevel);
       } catch (error) {
-        console.error('Error fetching videos:', error);
+        console.error('Error in fetchVideos:', error);
         toast({
           title: "Error",
-          description: "Failed to load videos",
+          description: "Failed to load videos. Please try again later.",
           variant: "destructive",
         });
       } finally {
