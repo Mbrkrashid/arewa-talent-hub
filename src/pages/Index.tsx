@@ -2,6 +2,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { Leaderboard } from "@/components/Leaderboard";
 import { TokenBalance } from "@/components/TokenBalance";
 import { SponsoredAds } from "@/components/SponsoredAds";
+import { VideoUpload } from "@/components/VideoUpload";
 import { AuthUI } from "@/components/AuthUI";
 import { Button } from "@/components/ui/button";
 import { Upload, Gamepad2 } from "lucide-react";
@@ -10,11 +11,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+interface Video {
+  id: string;
+  title: string;
+  vendor: {
+    business_name: string;
+  };
+  likes_count: number;
+  thumbnail_url: string;
+  level: number;
+}
+
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
   const [authError, setAuthError] = useState(null);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -42,48 +56,43 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [toast]);
 
-  const handleVote = () => {
-    if (!session) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be signed in to vote",
-      });
-      return;
-    }
-    
-    toast({
-      title: "Vote Recorded! 🎉",
-      description: "You've used 1 token to vote for this talent. Keep supporting!",
-    });
-  };
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('video_content')
+          .select(`
+            id,
+            title,
+            thumbnail_url,
+            likes_count,
+            vendors (
+              business_name
+            )
+          `)
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+        setVideos(data || []);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load videos",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, [toast]);
 
   if (!session) {
     return <AuthUI authError={authError} />;
   }
-
-  const mockVideos = [
-    {
-      id: 1,
-      title: "Traditional Dance Performance",
-      artist: "Amina Ibrahim",
-      votes: 1234,
-      thumbnailUrl: "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500",
-    },
-    {
-      id: 2,
-      title: "Hausa Folk Song",
-      artist: "Musa Abdullahi",
-      votes: 982,
-      thumbnailUrl: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500",
-    },
-    {
-      id: 3,
-      title: "Comedy Skit",
-      artist: "Yakubu Mohammed",
-      votes: 879,
-      thumbnailUrl: "https://images.unsplash.com/photo-1525331336235-d3153d8e0de4?w=500",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20">
@@ -122,18 +131,32 @@ const Index = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
+            <div className="mb-8">
+              <VideoUpload />
+            </div>
             <h2 className="text-xl font-semibold mb-6 text-white/90">Featured Talents</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {mockVideos.map((video) => (
-                <VideoCard
-                  key={video.id}
-                  title={video.title}
-                  artist={video.artist}
-                  votes={video.votes}
-                  thumbnailUrl={video.thumbnailUrl}
-                  onVote={handleVote}
-                />
-              ))}
+              {loading ? (
+                <div className="col-span-2 text-center py-12 text-gray-400">
+                  Loading talents...
+                </div>
+              ) : videos.length === 0 ? (
+                <div className="col-span-2 text-center py-12 text-gray-400">
+                  No videos uploaded yet. Be the first to share your talent!
+                </div>
+              ) : (
+                videos.map((video) => (
+                  <VideoCard
+                    key={video.id}
+                    id={video.id}
+                    title={video.title}
+                    artist={video.vendor?.business_name || "Anonymous"}
+                    votes={video.likes_count}
+                    thumbnailUrl={video.thumbnail_url || "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500"}
+                    level={Math.floor(video.likes_count / 100) + 1}
+                  />
+                ))
+              )}
             </div>
           </div>
           <div>
