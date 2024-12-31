@@ -2,12 +2,26 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Gamepad2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 interface AuthUIProps {
   authError: string | null;
 }
 
 export const AuthUI = ({ authError }: AuthUIProps) => {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (authError) {
+      toast({
+        title: "Authentication Error",
+        description: authError,
+        variant: "destructive",
+      });
+    }
+  }, [authError, toast]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex items-center justify-center">
       <div className="w-full max-w-md p-8 bg-black/50 rounded-lg border border-primary/20">
@@ -36,6 +50,14 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
           }}
           providers={[]}
           redirectTo={window.location.origin}
+          onError={(error) => {
+            console.error("Auth error:", error);
+            toast({
+              title: "Authentication Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          }}
           localization={{
             variables: {
               sign_in: {
