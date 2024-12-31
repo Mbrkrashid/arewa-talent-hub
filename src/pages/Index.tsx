@@ -50,10 +50,7 @@ const Index = () => {
             title,
             thumbnail_url,
             likes_count,
-            vendor_id,
-            vendors:vendors (
-              business_name
-            )
+            vendor_id
           `)
           .order('created_at', { ascending: false })
           .limit(10);
@@ -67,7 +64,8 @@ const Index = () => {
         
         const videosWithLevel = data?.map(video => ({
           ...video,
-          level: Math.floor((video.likes_count || 0) / 100) + 1
+          level: Math.floor((video.likes_count || 0) / 100) + 1,
+          vendors: { business_name: "Anonymous" } // Default vendor name
         })) || [];
         
         setVideos(videosWithLevel);
