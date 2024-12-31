@@ -4,6 +4,14 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+declare global {
+  interface Window {
+    ethereum?: {
+      request: (args: { method: string }) => Promise<string[]>;
+    };
+  }
+}
+
 export const WalletConnect = () => {
   const [connecting, setConnecting] = useState(false);
   const { toast } = useToast();
@@ -28,9 +36,9 @@ export const WalletConnect = () => {
       if (!user) return;
 
       const { error } = await supabase
-        .from("profiles")
+        .from('profiles')
         .update({ wallet_address: accounts[0] })
-        .eq("id", user.id);
+        .eq('id', user.id);
 
       if (error) throw error;
 

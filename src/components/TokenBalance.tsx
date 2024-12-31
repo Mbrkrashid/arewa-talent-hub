@@ -29,24 +29,24 @@ export const TokenBalance = () => {
       if (!user) return;
 
       // Fetch wallet data
-      const { data: walletData, error: walletError } = await supabase
-        .from("token_wallets")
-        .select("balance, total_earned")
-        .eq("user_id", user.id)
-        .single();
+      const { data: walletData } = await supabase
+        .from('token_wallets')
+        .select('balance, total_earned')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (!walletError && walletData) {
+      if (walletData) {
         setWallet(walletData);
       }
 
       // Fetch streak data
-      const { data: streakData, error: streakError } = await supabase
-        .from("user_streaks")
-        .select("current_streak, longest_streak")
-        .eq("user_id", user.id)
-        .single();
+      const { data: streakData } = await supabase
+        .from('user_streaks')
+        .select('current_streak, longest_streak')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (!streakError && streakData) {
+      if (streakData) {
         setStreak(streakData);
       }
     };

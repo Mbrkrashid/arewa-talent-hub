@@ -26,9 +26,9 @@ export const AchievementsPanel = () => {
     const fetchAchievements = async () => {
       try {
         const { data: achievementsData, error: achievementsError } = await supabase
-          .from("achievements")
-          .select("*")
-          .order("points", { ascending: true });
+          .from('achievements')
+          .select('id, name, description, points, badge_image_url')
+          .order('points', { ascending: true });
 
         if (achievementsError) throw achievementsError;
 
@@ -36,14 +36,14 @@ export const AchievementsPanel = () => {
         if (!user) return;
 
         const { data: userAchievementsData, error: userAchievementsError } = await supabase
-          .from("user_achievements")
-          .select("achievement_id, earned_at")
-          .eq("user_id", user.id);
+          .from('user_achievements')
+          .select('achievement_id, earned_at')
+          .eq('user_id', user.id);
 
         if (userAchievementsError) throw userAchievementsError;
 
-        setAchievements(achievementsData);
-        setUserAchievements(userAchievementsData);
+        setAchievements(achievementsData || []);
+        setUserAchievements(userAchievementsData || []);
       } catch (error) {
         console.error("Error fetching achievements:", error);
       } finally {

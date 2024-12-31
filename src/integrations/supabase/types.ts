@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          badge_image_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          points: number | null
+        }
+        Insert: {
+          badge_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          points?: number | null
+        }
+        Update: {
+          badge_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          points?: number | null
+        }
+        Relationships: []
+      }
       ad_impressions: {
         Row: {
           device_info: Json | null
@@ -408,24 +435,30 @@ export type Database = {
           created_at: string
           id: string
           role: string | null
+          total_points: number | null
           updated_at: string
           username: string | null
+          wallet_address: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           id: string
           role?: string | null
+          total_points?: number | null
           updated_at?: string
           username?: string | null
+          wallet_address?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           id?: string
           role?: string | null
+          total_points?: number | null
           updated_at?: string
           username?: string | null
+          wallet_address?: string | null
         }
         Relationships: []
       }
@@ -676,6 +709,62 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_streaks: {
+        Row: {
+          current_streak: number | null
+          id: string
+          last_activity: string | null
+          longest_streak: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number | null
+          id?: string
+          last_activity?: string | null
+          longest_streak?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          current_streak?: number | null
+          id?: string
+          last_activity?: string | null
+          longest_streak?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       vendor_followers: {
         Row: {
