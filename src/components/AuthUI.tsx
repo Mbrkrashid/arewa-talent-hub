@@ -35,7 +35,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
             },
           }}
           providers={[]}
-          redirectTo={window.location.origin.replace(/\/$/, '')}
+          redirectTo={window.location.origin}
           localization={{
             variables: {
               sign_in: {
