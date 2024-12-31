@@ -51,7 +51,7 @@ const Index = () => {
             thumbnail_url,
             likes_count,
             vendor_id,
-            vendors:vendor_id (
+            vendors (
               business_name
             )
           `)
