@@ -60,6 +60,7 @@ const Index = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
+        console.log('Fetching videos...');
         const { data, error } = await supabase
           .from('video_content')
           .select(`
@@ -75,7 +76,12 @@ const Index = () => {
           .order('created_at', { ascending: false })
           .limit(10);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching videos:', error);
+          throw error;
+        }
+        
+        console.log('Fetched videos:', data);
         
         // Transform the data to include the level calculation
         const videosWithLevel = data?.map(video => ({
