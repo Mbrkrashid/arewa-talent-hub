@@ -1,14 +1,14 @@
 import { VideoCard } from "@/components/VideoCard";
 import { Leaderboard } from "@/components/Leaderboard";
 import { TokenBalance } from "@/components/TokenBalance";
+import { SponsoredAds } from "@/components/SponsoredAds";
+import { AuthUI } from "@/components/AuthUI";
 import { Button } from "@/components/ui/button";
 import { Upload, Gamepad2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { SponsoredAds } from "@/components/SponsoredAds";
 import { useNavigate } from "react-router-dom";
-import { AuthUI } from "@/components/AuthUI";
 
 const Index = () => {
   const { toast } = useToast();
