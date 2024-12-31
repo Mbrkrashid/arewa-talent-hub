@@ -16,7 +16,8 @@ interface Video {
   title: string;
   thumbnail_url: string;
   likes_count: number;
-  vendors: {
+  vendor_id: string;
+  vendor: {
     business_name: string;
   };
   level?: number;
@@ -66,7 +67,8 @@ const Index = () => {
             title,
             thumbnail_url,
             likes_count,
-            vendors (
+            vendor_id,
+            vendor:vendors (
               business_name
             )
           `)
@@ -157,7 +159,7 @@ const Index = () => {
                     key={video.id}
                     id={video.id}
                     title={video.title}
-                    artist={video.vendors?.business_name || "Anonymous"}
+                    artist={video.vendor?.business_name || "Anonymous"}
                     votes={video.likes_count}
                     thumbnailUrl={video.thumbnail_url || "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500"}
                     level={video.level || 1}
