@@ -14,12 +14,12 @@ import { useNavigate } from "react-router-dom";
 interface Video {
   id: string;
   title: string;
-  vendor: {
+  thumbnail_url: string;
+  likes_count: number;
+  vendors: {
     business_name: string;
   };
-  likes_count: number;
-  thumbnail_url: string;
-  level: number;
+  level?: number;
 }
 
 const Index = () => {
@@ -74,7 +74,14 @@ const Index = () => {
           .limit(10);
 
         if (error) throw error;
-        setVideos(data || []);
+        
+        // Transform the data to include the level calculation
+        const videosWithLevel = data?.map(video => ({
+          ...video,
+          level: Math.floor((video.likes_count || 0) / 100) + 1
+        })) || [];
+        
+        setVideos(videosWithLevel);
       } catch (error) {
         console.error('Error fetching videos:', error);
         toast({
@@ -150,10 +157,10 @@ const Index = () => {
                     key={video.id}
                     id={video.id}
                     title={video.title}
-                    artist={video.vendor?.business_name || "Anonymous"}
+                    artist={video.vendors?.business_name || "Anonymous"}
                     votes={video.likes_count}
                     thumbnailUrl={video.thumbnail_url || "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500"}
-                    level={Math.floor(video.likes_count / 100) + 1}
+                    level={video.level || 1}
                   />
                 ))
               )}

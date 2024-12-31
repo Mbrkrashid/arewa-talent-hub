@@ -36,7 +36,7 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
       // Check token balance
       const { data: wallet } = await supabase
         .from('token_wallets')
-        .select('balance')
+        .select('balance, total_spent')
         .eq('user_id', user.id)
         .single();
 
@@ -71,7 +71,7 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
         .from('token_wallets')
         .update({ 
           balance: wallet.balance - 1,
-          total_spent: wallet.total_spent + 1
+          total_spent: (wallet.total_spent || 0) + 1 // Handle case where total_spent might be null
         })
         .eq('user_id', user.id);
 
