@@ -50,14 +50,6 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
           }}
           providers={[]}
           redirectTo={window.location.origin}
-          onError={(error) => {
-            console.error("Auth error:", error);
-            toast({
-              title: "Authentication Error",
-              description: error.message,
-              variant: "destructive",
-            });
-          }}
           localization={{
             variables: {
               sign_in: {
