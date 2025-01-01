@@ -45,12 +45,7 @@ const Index = () => {
         console.log('Fetching videos from Supabase...');
         const { data, error } = await supabase
           .from('video_content')
-          .select(`
-            *,
-            vendors (
-              business_name
-            )
-          `)
+          .select('*, vendors(business_name)')
           .order('created_at', { ascending: false })
           .limit(10);
 
