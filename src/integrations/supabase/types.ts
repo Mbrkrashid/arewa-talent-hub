@@ -1138,10 +1138,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      increment_participation_count: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      increment_participation_count:
+        | {
+            Args: Record<PropertyKey, never>
+            Returns: number
+          }
+        | {
+            Args: {
+              challenge_id: string
+            }
+            Returns: number
+          }
     }
     Enums: {
       [_ in never]: never
