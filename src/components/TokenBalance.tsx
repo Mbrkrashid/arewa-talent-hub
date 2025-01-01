@@ -8,16 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 
-interface TokenWallet {
-  balance: number;
-  total_earned: number;
-}
-
-interface UserStreak {
-  current_streak: number;
-  longest_streak: number;
-}
+type TokenWallet = Database['public']['Tables']['token_wallets']['Row'];
+type UserStreak = Database['public']['Tables']['user_streaks']['Row'];
 
 export const TokenBalance = () => {
   const [wallet, setWallet] = useState<TokenWallet | null>(null);
@@ -56,7 +50,7 @@ export const TokenBalance = () => {
 
   if (!wallet) return null;
 
-  const level = Math.floor(wallet.total_earned / 100) + 1;
+  const level = Math.floor((wallet.total_earned || 0) / 100) + 1;
 
   return (
     <TooltipProvider>
