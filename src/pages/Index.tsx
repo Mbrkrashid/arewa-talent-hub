@@ -53,15 +53,15 @@ const Index = () => {
           console.error('Error fetching videos:', error);
           throw error;
         }
-        
+
         console.log('Successfully fetched videos:', data);
-        
+
         const videosWithLevel = data?.map(video => ({
           ...video,
           level: Math.floor((video.likes_count || 0) / 100) + 1,
           vendors: { business_name: "Anonymous" }
         })) || [];
-        
+
         setVideos(videosWithLevel);
       } catch (error) {
         console.error('Error in fetchVideos:', error);
