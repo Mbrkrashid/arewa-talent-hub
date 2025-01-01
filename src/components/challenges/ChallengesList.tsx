@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { VideoChallenge } from './VideoChallenge';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Database } from '@/integrations/supabase/types';
+
+type HashtagChallenge = Database['public']['Tables']['hashtag_challenges']['Row'];
 
 interface Challenge {
   id: string;
@@ -29,7 +32,18 @@ export const ChallengesList = () => {
 
         if (error) throw error;
 
-        setChallenges(data || []);
+        // Transform the data to match the Challenge interface
+        const transformedData: Challenge[] = (data || []).map((challenge: HashtagChallenge) => ({
+          id: challenge.id,
+          hashtag: challenge.hashtag,
+          description: challenge.description || '',
+          prize_details: {
+            tokens: challenge.prize_details?.tokens as number || 0
+          },
+          end_date: challenge.end_date
+        }));
+
+        setChallenges(transformedData);
       } catch (error) {
         console.error('Error fetching challenges:', error);
         toast({
