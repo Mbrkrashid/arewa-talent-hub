@@ -37,12 +37,6 @@ const Index = () => {
           description: "Successfully signed out",
         });
       }
-      if (_event === 'USER_DELETED') {
-        toast({
-          title: "Account Deleted",
-          description: "Your account has been successfully deleted",
-        });
-      }
     });
 
     return () => subscription.unsubscribe();

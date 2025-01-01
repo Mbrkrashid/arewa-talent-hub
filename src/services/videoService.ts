@@ -19,7 +19,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
     .from('video_content')
     .select(`
       *,
-      vendors:vendor_id (
+      vendors (
         business_name
       )
     `)
