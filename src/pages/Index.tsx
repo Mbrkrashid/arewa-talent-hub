@@ -45,7 +45,12 @@ const Index = () => {
         console.log('Fetching videos from Supabase...');
         const { data, error } = await supabase
           .from('video_content')
-          .select('*')
+          .select(`
+            *,
+            vendors (
+              business_name
+            )
+          `)
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -59,7 +64,7 @@ const Index = () => {
         const videosWithLevel = data?.map(video => ({
           ...video,
           level: Math.floor((video.likes_count || 0) / 100) + 1,
-          vendors: { business_name: "Anonymous" }
+          vendors: video.vendors || { business_name: "Anonymous" }
         })) || [];
 
         setVideos(videosWithLevel);
