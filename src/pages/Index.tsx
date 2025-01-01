@@ -46,8 +46,18 @@ const Index = () => {
         const { data, error } = await supabase
           .from('video_content')
           .select(`
-            *,
-            vendors (
+            id,
+            title,
+            description,
+            video_url,
+            thumbnail_url,
+            views_count,
+            likes_count,
+            shares_count,
+            created_at,
+            updated_at,
+            vendor_id,
+            vendors:vendors (
               business_name
             )
           `)
