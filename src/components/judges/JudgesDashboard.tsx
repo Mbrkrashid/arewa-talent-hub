@@ -5,11 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, Award } from "lucide-react";
 
-interface ScoringCriteria {
+type ScoringCriteria = {
   creativity: number;
   skill: number;
   performance: number;
-}
+};
 
 interface Video {
   id: string;
@@ -39,7 +39,7 @@ export const JudgesDashboard = () => {
         .from("judges")
         .select("id")
         .eq("profile_id", (await supabase.auth.getUser()).data.user?.id)
-        .single();
+        .maybeSingle();
 
       if (!judge) {
         toast({
@@ -50,12 +50,17 @@ export const JudgesDashboard = () => {
         return;
       }
 
-      const { error } = await supabase.from("judge_reviews").insert({
+      // Convert scores to a plain object that matches the database JSON structure
+      const reviewData = {
         judge_id: judge.id,
         video_id: videoId,
-        scores,
+        scores: scores as Record<string, number>,
         feedback,
-      });
+      };
+
+      const { error } = await supabase
+        .from("judge_reviews")
+        .insert(reviewData);
 
       if (error) {
         if (error.code === "23505") {
