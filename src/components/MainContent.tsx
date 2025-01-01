@@ -4,6 +4,7 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { AchievementsPanel } from "@/components/achievements/AchievementsPanel";
 import { WalletConnect } from "@/components/wallet/WalletConnect";
 import { JudgesDashboard } from "@/components/judges/JudgesDashboard";
+import { ChallengesList } from "@/components/challenges/ChallengesList";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,6 +40,10 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
         </div>
         <div className="mb-8">
           <WalletConnect />
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-6 text-white/90">Active Challenges</h2>
+          <ChallengesList />
         </div>
         {isJudge ? (
           <JudgesDashboard />
