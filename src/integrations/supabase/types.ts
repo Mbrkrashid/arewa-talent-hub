@@ -275,6 +275,51 @@ export type Database = {
           },
         ]
       }
+      judge_reviews: {
+        Row: {
+          created_at: string | null
+          feedback: string | null
+          id: string
+          judge_id: string
+          scores: Json
+          updated_at: string | null
+          video_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          judge_id: string
+          scores?: Json
+          updated_at?: string | null
+          video_id: string
+        }
+        Update: {
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          judge_id?: string
+          scores?: Json
+          updated_at?: string | null
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judge_reviews_judge_id_fkey"
+            columns: ["judge_id"]
+            isOneToOne: false
+            referencedRelation: "judges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "judge_reviews_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "video_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judges: {
         Row: {
           bio: string | null
@@ -283,6 +328,7 @@ export type Database = {
           id: string
           profile_id: string | null
           rating: number | null
+          scoring_criteria: Json | null
           updated_at: string | null
         }
         Insert: {
@@ -292,6 +338,7 @@ export type Database = {
           id?: string
           profile_id?: string | null
           rating?: number | null
+          scoring_criteria?: Json | null
           updated_at?: string | null
         }
         Update: {
@@ -301,6 +348,7 @@ export type Database = {
           id?: string
           profile_id?: string | null
           rating?: number | null
+          scoring_criteria?: Json | null
           updated_at?: string | null
         }
         Relationships: [
