@@ -25,6 +25,7 @@ const Index = () => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (_event === 'SIGNED_IN') {
+        setAuthError(null); // Clear any previous auth errors
         toast({
           title: "Welcome! 🎉",
           description: "Successfully signed in",
@@ -34,6 +35,12 @@ const Index = () => {
         toast({
           title: "Goodbye! 👋",
           description: "Successfully signed out",
+        });
+      }
+      if (_event === 'USER_DELETED') {
+        toast({
+          title: "Account Deleted",
+          description: "Your account has been successfully deleted",
         });
       }
     });
@@ -47,6 +54,7 @@ const Index = () => {
         const { data, error } = await fetchVideos();
         
         if (error) {
+          console.error('Error fetching videos:', error);
           throw error;
         }
 
