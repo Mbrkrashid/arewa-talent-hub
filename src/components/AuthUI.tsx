@@ -56,7 +56,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
           redirectTo={window.location.origin}
           showLinks={true}
           view="sign_in"
-          onAuthError={handleAuthError}
+          onError={handleAuthError}
           localization={{
             variables: {
               sign_in: {
