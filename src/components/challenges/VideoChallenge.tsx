@@ -62,7 +62,7 @@ export const VideoChallenge = ({
       const { error } = await supabase
         .from('hashtag_challenges')
         .update({ 
-          participation_count: supabase.sql`participation_count + 1` 
+          participation_count: supabase.rpc('increment_participation_count')
         })
         .eq('id', challengeId);
 

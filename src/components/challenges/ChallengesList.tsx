@@ -38,7 +38,9 @@ export const ChallengesList = () => {
           hashtag: challenge.hashtag,
           description: challenge.description || '',
           prize_details: {
-            tokens: challenge.prize_details?.tokens as number || 0
+            tokens: typeof challenge.prize_details === 'object' && challenge.prize_details !== null 
+              ? (challenge.prize_details as { tokens: number }).tokens || 0
+              : 0
           },
           end_date: challenge.end_date
         }));
