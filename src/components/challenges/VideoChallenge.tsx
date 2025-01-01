@@ -61,7 +61,7 @@ export const VideoChallenge = ({
       // Record participation in Supabase using the RPC function
       const { data, error } = await supabase.rpc('increment_participation_count', {
         challenge_id: challengeId
-      } as { challenge_id: string });
+      });
 
       if (error) throw error;
 
