@@ -3,7 +3,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Gamepad2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect } from "react";
+import { useState } from "react";
 
 interface AuthUIProps {
   authError: string | null;
@@ -11,16 +11,20 @@ interface AuthUIProps {
 
 export const AuthUI = ({ authError }: AuthUIProps) => {
   const { toast } = useToast();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (authError) {
-      toast({
-        title: "Authentication Error",
-        description: authError,
-        variant: "destructive",
-      });
-    }
-  }, [authError, toast]);
+  const handleAuthError = (error: { message: string }) => {
+    const errorMessage = error.message === "Invalid login credentials" 
+      ? "Incorrect email or password. Please try again." 
+      : error.message;
+    
+    setLoginError(errorMessage);
+    toast({
+      title: "Authentication Error",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex items-center justify-center">
@@ -50,6 +54,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
           }}
           providers={[]}
           redirectTo={window.location.origin}
+          onError={handleAuthError}
           localization={{
             variables: {
               sign_in: {
@@ -71,8 +76,10 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
             },
           }}
         />
-        {authError && (
-          <p className="mt-4 text-sm text-red-500 text-center">{authError}</p>
+        {(loginError || authError) && (
+          <p className="mt-4 text-sm text-red-500 text-center">
+            {loginError || authError}
+          </p>
         )}
       </div>
     </div>
