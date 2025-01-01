@@ -44,6 +44,7 @@ const Index = () => {
       try {
         console.log('Fetching videos from Supabase...');
         const { data, error } = await supabase
+          .schema('public')
           .from('video_content')
           .select('id, title, description, video_url, thumbnail_url, views_count, likes_count, shares_count, created_at, updated_at, vendor_id, vendors!inner(business_name)')
           .order('created_at', { ascending: false })
