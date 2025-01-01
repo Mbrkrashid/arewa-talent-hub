@@ -25,7 +25,7 @@ export const TokenBalance = () => {
       // Fetch wallet data
       const { data: walletData } = await supabase
         .from('token_wallets')
-        .select('balance, total_earned')
+        .select('*')  // Select all fields to match the type
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -36,7 +36,7 @@ export const TokenBalance = () => {
       // Fetch streak data
       const { data: streakData } = await supabase
         .from('user_streaks')
-        .select('current_streak, longest_streak')
+        .select('*')  // Select all fields to match the type
         .eq('user_id', user.id)
         .maybeSingle();
 
