@@ -5,12 +5,14 @@ import { AuthUI } from "@/components/AuthUI";
 import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
+import { fetchVideos } from "@/services/videoService";
+import type { Video } from "@/services/videoService";
 
 const Index = () => {
   const { toast } = useToast();
   const [session, setSession] = useState(null);
   const [authError, setAuthError] = useState(null);
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,31 +42,19 @@ const Index = () => {
   }, [toast]);
 
   useEffect(() => {
-    const fetchVideos = async () => {
+    const loadVideos = async () => {
       try {
-        console.log('Fetching videos from Supabase...');
-        const { data, error } = await supabase
-          .from('video_content')
-          .select('*, vendors(business_name)')
-          .order('created_at', { ascending: false })
-          .limit(10);
-
+        const { data, error } = await fetchVideos();
+        
         if (error) {
-          console.error('Error fetching videos:', error);
           throw error;
         }
 
-        console.log('Successfully fetched videos:', data);
-
-        const videosWithLevel = data?.map(video => ({
-          ...video,
-          level: Math.floor((video.likes_count || 0) / 100) + 1,
-          vendors: video.vendors || { business_name: "Anonymous" }
-        })) || [];
-
-        setVideos(videosWithLevel);
+        if (data) {
+          setVideos(data);
+        }
       } catch (error) {
-        console.error('Error in fetchVideos:', error);
+        console.error('Error in loadVideos:', error);
         toast({
           title: "Error",
           description: "Failed to load videos. Please try again later.",
@@ -75,7 +65,7 @@ const Index = () => {
       }
     };
 
-    fetchVideos();
+    loadVideos();
   }, [toast]);
 
   if (!session) {
