@@ -17,20 +17,23 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (_event === 'USER_ERROR') {
-        const errorMessage = "Incorrect email or password. Please try again.";
-        setLoginError(errorMessage);
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        setLoginError(null);
+      }
+      
+      // Handle any auth errors through the error state
+      if (loginError) {
         toast({
           title: "Authentication Error",
-          description: errorMessage,
+          description: loginError,
           variant: "destructive",
         });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [toast]);
+  }, [toast, loginError]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex items-center justify-center">
