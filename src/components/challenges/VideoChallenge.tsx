@@ -58,13 +58,9 @@ export const VideoChallenge = ({
       // Note: This is a placeholder for TikTok API integration
       console.log("Uploading to TikTok...");
 
-      // Record participation in Supabase
-      const { error } = await supabase
-        .from('hashtag_challenges')
-        .update({ 
-          participation_count: supabase.rpc('increment_participation_count')
-        })
-        .eq('id', challengeId);
+      // Record participation in Supabase using the RPC function
+      const { data, error } = await supabase
+        .rpc('increment_participation_count', { challenge_id: challengeId });
 
       if (error) throw error;
 
