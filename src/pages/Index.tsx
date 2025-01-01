@@ -16,16 +16,18 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
+    // Set up auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (_event === 'SIGNED_IN') {
-        setAuthError(null); // Clear any previous auth errors
+        setAuthError(null);
         toast({
           title: "Welcome! 🎉",
           description: "Successfully signed in",
@@ -44,12 +46,20 @@ const Index = () => {
 
   useEffect(() => {
     const loadVideos = async () => {
+      if (!session) return; // Only fetch videos if user is authenticated
+      
       try {
+        setLoading(true);
         const { data, error } = await fetchVideos();
         
         if (error) {
-          console.error('Error fetching videos:', error);
-          throw error;
+          console.error('Error in loadVideos:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load videos. Please try again later.",
+            variant: "destructive",
+          });
+          return;
         }
 
         if (data) {
@@ -68,7 +78,7 @@ const Index = () => {
     };
 
     loadVideos();
-  }, [toast]);
+  }, [session, toast]);
 
   if (!session) {
     return <AuthUI authError={authError} />;

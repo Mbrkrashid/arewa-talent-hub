@@ -24,7 +24,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
         thumbnail_url,
         likes_count,
         vendor_id,
-        vendors:vendors!video_content_vendor_id_fkey (
+        vendors (
           business_name
         )
       `)
