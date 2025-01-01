@@ -44,7 +44,6 @@ const Index = () => {
       try {
         console.log('Fetching videos from Supabase...');
         const { data, error } = await supabase
-          .schema('public')
           .from('video_content')
           .select(`
             *,
