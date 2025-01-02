@@ -102,16 +102,12 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
               localization={{
                 variables: {
                   sign_up: {
-                    email_label: 'Email',
-                    password_label: 'Password',
                     button_label: isParticipant ? 'Sign up as Participant' : 'Sign up as Voter',
                     loading_button_label: 'Signing up...',
                     social_provider_text: 'Continue with {{provider}}',
                     link_text: 'Already have an account? Sign in',
                   },
                   sign_in: {
-                    email_label: 'Email',
-                    password_label: 'Password',
                     button_label: 'Sign in',
                     loading_button_label: 'Signing in...',
                     social_provider_text: 'Continue with {{provider}}',
