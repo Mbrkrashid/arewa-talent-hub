@@ -16,14 +16,18 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
   const [isParticipant, setIsParticipant] = useState(false);
 
   useEffect(() => {
+    console.log("Setting up auth state change listener");
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session);
+      
       if (event === 'SIGNED_OUT') {
         setLoginError(null);
       }
       
       if (loginError) {
+        console.error("Authentication error:", loginError);
         toast({
           title: "Authentication Error",
           description: loginError,
@@ -94,7 +98,15 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
               }}
               providers={["google"]}
               redirectTo={window.location.origin}
-              showLinks={true}
+              onError={(error) => {
+                console.error("Auth error:", error);
+                setLoginError(error.message);
+                toast({
+                  title: "Authentication Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
+              }}
               view="sign_up"
               localization={{
                 variables: {
