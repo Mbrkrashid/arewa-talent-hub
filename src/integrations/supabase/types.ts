@@ -296,6 +296,53 @@ export type Database = {
           },
         ]
       }
+      judge_applications: {
+        Row: {
+          created_at: string | null
+          expertise: string
+          full_name: string
+          id: string
+          motivation: string
+          portfolio_url: string | null
+          profile_id: string | null
+          status: string | null
+          updated_at: string | null
+          years_experience: number
+        }
+        Insert: {
+          created_at?: string | null
+          expertise: string
+          full_name: string
+          id?: string
+          motivation: string
+          portfolio_url?: string | null
+          profile_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          years_experience: number
+        }
+        Update: {
+          created_at?: string | null
+          expertise?: string
+          full_name?: string
+          id?: string
+          motivation?: string
+          portfolio_url?: string | null
+          profile_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          years_experience?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judge_applications_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judge_reviews: {
         Row: {
           created_at: string | null
@@ -343,6 +390,8 @@ export type Database = {
       }
       judges: {
         Row: {
+          application_date: string | null
+          application_status: string | null
           bio: string | null
           created_at: string | null
           expertise: string | null
@@ -355,6 +404,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          application_date?: string | null
+          application_status?: string | null
           bio?: string | null
           created_at?: string | null
           expertise?: string | null
@@ -367,6 +418,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          application_date?: string | null
+          application_status?: string | null
           bio?: string | null
           created_at?: string | null
           expertise?: string | null

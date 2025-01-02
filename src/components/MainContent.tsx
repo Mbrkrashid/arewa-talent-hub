@@ -4,6 +4,7 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { AchievementsPanel } from "@/components/achievements/AchievementsPanel";
 import { WalletConnect } from "@/components/wallet/WalletConnect";
 import { JudgesDashboard } from "@/components/judges/JudgesDashboard";
+import { JudgeApplicationForm } from "@/components/judges/JudgeApplicationForm";
 import { ChallengesList } from "@/components/challenges/ChallengesList";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +19,7 @@ interface MainContentProps {
 
 export const MainContent = ({ videos, loading }: MainContentProps) => {
   const [isJudge, setIsJudge] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
   const [userRole, setUserRole] = useState<'participant' | 'voter' | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'scroll'>('grid');
 
@@ -33,6 +35,15 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
           .single();
         
         setIsJudge(!!judge);
+
+        // Check if user has already applied to be a judge
+        const { data: application } = await supabase
+          .from("judge_applications")
+          .select("id")
+          .eq("profile_id", user.id)
+          .single();
+
+        setHasApplied(!!application);
 
         // Get user role from profiles
         const { data: profile } = await supabase
@@ -86,6 +97,10 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
           
           {isJudge ? (
             <JudgesDashboard />
+          ) : !hasApplied ? (
+            <div className="mb-8">
+              <JudgeApplicationForm />
+            </div>
           ) : (
             <>
               <div className="flex items-center justify-between mb-6">
