@@ -8,7 +8,8 @@ import { ChallengesList } from "@/components/challenges/ChallengesList";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Trophy, Star, Users } from "lucide-react";
+import { Trophy, Star, Users, Grid, ScrollText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MainContentProps {
   videos: any[];
@@ -18,6 +19,7 @@ interface MainContentProps {
 export const MainContent = ({ videos, loading }: MainContentProps) => {
   const [isJudge, setIsJudge] = useState(false);
   const [userRole, setUserRole] = useState<'participant' | 'voter' | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'scroll'>('grid');
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -86,8 +88,28 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
             <JudgesDashboard />
           ) : (
             <>
-              <h2 className="text-xl font-semibold mb-6 text-white/90">Featured Talents</h2>
-              <VideoGrid videos={videos} loading={loading} />
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-white/90">Featured Talents</h2>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                  >
+                    <Grid className="h-4 w-4 mr-2" />
+                    Grid
+                  </Button>
+                  <Button
+                    variant={viewMode === 'scroll' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('scroll')}
+                  >
+                    <ScrollText className="h-4 w-4 mr-2" />
+                    Scroll
+                  </Button>
+                </div>
+              </div>
+              <VideoGrid videos={videos} loading={loading} viewMode={viewMode} />
             </>
           )}
         </div>
