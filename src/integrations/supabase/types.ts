@@ -112,6 +112,27 @@ export type Database = {
           },
         ]
       }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_super_admin: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          is_super_admin?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_super_admin?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       brand_campaigns: {
         Row: {
           ad_placement: string | null
@@ -329,6 +350,8 @@ export type Database = {
           profile_id: string | null
           rating: number | null
           scoring_criteria: Json | null
+          status: string | null
+          suspension_reason: string | null
           updated_at: string | null
         }
         Insert: {
@@ -339,6 +362,8 @@ export type Database = {
           profile_id?: string | null
           rating?: number | null
           scoring_criteria?: Json | null
+          status?: string | null
+          suspension_reason?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -349,6 +374,8 @@ export type Database = {
           profile_id?: string | null
           rating?: number | null
           scoring_criteria?: Json | null
+          status?: string | null
+          suspension_reason?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -981,6 +1008,30 @@ export type Database = {
         }
         Relationships: []
       }
+      video_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       video_comments: {
         Row: {
           comment: string
@@ -1018,9 +1069,12 @@ export type Database = {
       }
       video_content: {
         Row: {
+          ban_reason: string | null
+          category_id: string | null
           created_at: string | null
           description: string | null
           id: string
+          is_banned: boolean | null
           likes_count: number | null
           music_title: string | null
           music_url: string | null
@@ -1033,9 +1087,12 @@ export type Database = {
           views_count: number | null
         }
         Insert: {
+          ban_reason?: string | null
+          category_id?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
+          is_banned?: boolean | null
           likes_count?: number | null
           music_title?: string | null
           music_url?: string | null
@@ -1048,9 +1105,12 @@ export type Database = {
           views_count?: number | null
         }
         Update: {
+          ban_reason?: string | null
+          category_id?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
+          is_banned?: boolean | null
           likes_count?: number | null
           music_title?: string | null
           music_url?: string | null
@@ -1063,6 +1123,13 @@ export type Database = {
           views_count?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "video_content_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "video_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "video_content_vendor_id_fkey"
             columns: ["vendor_id"]

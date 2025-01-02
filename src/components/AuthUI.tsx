@@ -92,7 +92,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
                   },
                 },
               }}
-              providers={[]}
+              providers={["google"]}
               redirectTo={window.location.origin}
               showLinks={true}
               view="sign_up"
@@ -103,7 +103,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
                     password_label: 'Password',
                     button_label: isParticipant ? 'Sign up as Participant' : 'Sign up as Voter',
                     loading_button_label: 'Signing up...',
-                    social_provider_text: 'Sign up with {{provider}}',
+                    social_provider_text: 'Continue with {{provider}}',
                     link_text: 'Already have an account? Sign in',
                   },
                   sign_in: {
@@ -111,7 +111,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
                     password_label: 'Password',
                     button_label: 'Sign in',
                     loading_button_label: 'Signing in...',
-                    social_provider_text: 'Sign in with {{provider}}',
+                    social_provider_text: 'Continue with {{provider}}',
                     link_text: "Don't have an account? Sign up",
                   },
                 },
