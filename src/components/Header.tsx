@@ -17,10 +17,11 @@ export const Header = () => {
               Arewa Talent Hub
             </h1>
           </div>
+          
           <div className="flex items-center gap-4">
             <TokenBalance />
             <Button 
-              className="bg-primary hover:bg-primary/90 animate-pulse"
+              className="bg-primary hover:bg-primary/90"
               onClick={() => navigate("/upload")}
             >
               <Upload className="h-4 w-4 mr-2" />
