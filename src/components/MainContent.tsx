@@ -5,6 +5,7 @@ import { AchievementsPanel } from "@/components/achievements/AchievementsPanel";
 import { WalletConnect } from "@/components/wallet/WalletConnect";
 import { JudgesDashboard } from "@/components/judges/JudgesDashboard";
 import { JudgeApplicationForm } from "@/components/judges/JudgeApplicationForm";
+import { AdminDashboard } from "@/components/judges/AdminDashboard";
 import { ChallengesList } from "@/components/challenges/ChallengesList";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ interface MainContentProps {
 
 export const MainContent = ({ videos, loading }: MainContentProps) => {
   const [isJudge, setIsJudge] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
   const [userRole, setUserRole] = useState<'participant' | 'voter' | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'scroll'>('grid');
@@ -27,6 +29,15 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
     const checkUserStatus = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // Check if user is an admin
+        const { data: admin } = await supabase
+          .from("admin_users")
+          .select("id")
+          .eq("id", user.id)
+          .single();
+        
+        setIsAdmin(!!admin);
+
         // Check if user is a judge
         const { data: judge } = await supabase
           .from("judges")
@@ -95,7 +106,9 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
             <ChallengesList />
           </div>
           
-          {isJudge ? (
+          {isAdmin ? (
+            <AdminDashboard />
+          ) : isJudge ? (
             <JudgesDashboard />
           ) : !hasApplied ? (
             <div className="mb-8">
