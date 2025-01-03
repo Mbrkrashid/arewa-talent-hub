@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Youtube, BrandTiktok, Instagram, ExternalLink } from "lucide-react";
+import { Youtube, Video, Instagram, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -77,7 +77,7 @@ export const SocialMediaVideos = () => {
       case 'youtube':
         return <Youtube className="h-5 w-5 text-red-500" />;
       case 'tiktok':
-        return <BrandTiktok className="h-5 w-5" />;
+        return <Video className="h-5 w-5" />;
       case 'instagram':
         return <Instagram className="h-5 w-5 text-pink-500" />;
       default:
