@@ -5,7 +5,7 @@ import { AchievementsPanel } from "@/components/achievements/AchievementsPanel";
 import { WalletConnect } from "@/components/wallet/WalletConnect";
 import { JudgesDashboard } from "@/components/judges/JudgesDashboard";
 import { JudgeApplicationForm } from "@/components/judges/JudgeApplicationForm";
-import { AdminDashboard } from "@/components/judges/AdminDashboard";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { ChallengesList } from "@/components/challenges/ChallengesList";
 import { SocialMediaVideos } from "@/components/social/SocialMediaVideos";
 import { useEffect, useState } from "react";
@@ -73,86 +73,89 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
 
   return (
     <div className="space-y-8">
-      {/* Prize Pool Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border-yellow-500/20">
-          <Trophy className="h-8 w-8 text-yellow-500 mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">1st Prize</h3>
-          <p className="text-3xl font-bold text-yellow-500">₦2,000,000</p>
-        </Card>
-        
-        <Card className="p-6 bg-gradient-to-br from-gray-400/20 to-gray-500/20 border-gray-400/20">
-          <Trophy className="h-8 w-8 text-gray-400 mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">2nd Prize</h3>
-          <p className="text-3xl font-bold text-gray-400">₦1,000,000</p>
-        </Card>
-        
-        <Card className="p-6 bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/20">
-          <Trophy className="h-8 w-8 text-orange-500 mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">3rd Prize</h3>
-          <p className="text-3xl font-bold text-orange-500">₦500,000</p>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          {userRole === 'participant' && (
-            <div className="mb-8">
-              <VideoUpload />
-            </div>
-          )}
-          
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-6 text-white/90">Active Challenges</h2>
-            <ChallengesList />
+      {isAdmin ? (
+        <AdminDashboard />
+      ) : (
+        <>
+          {/* Prize Pool Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card className="p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border-yellow-500/20">
+              <Trophy className="h-8 w-8 text-yellow-500 mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">1st Prize</h3>
+              <p className="text-3xl font-bold text-yellow-500">₦2,000,000</p>
+            </Card>
+            
+            <Card className="p-6 bg-gradient-to-br from-gray-400/20 to-gray-500/20 border-gray-400/20">
+              <Trophy className="h-8 w-8 text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">2nd Prize</h3>
+              <p className="text-3xl font-bold text-gray-400">₦1,000,000</p>
+            </Card>
+            
+            <Card className="p-6 bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/20">
+              <Trophy className="h-8 w-8 text-orange-500 mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">3rd Prize</h3>
+              <p className="text-3xl font-bold text-orange-500">₦500,000</p>
+            </Card>
           </div>
 
-          {/* Add SocialMediaVideos component */}
-          <div className="mb-8">
-            <SocialMediaVideos />
-          </div>
-          
-          {isAdmin ? (
-            <AdminDashboard />
-          ) : isJudge ? (
-            <JudgesDashboard />
-          ) : !hasApplied ? (
-            <div className="mb-8">
-              <JudgeApplicationForm />
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white/90">Featured Talents</h2>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant={viewMode === 'grid' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                  >
-                    <Grid className="h-4 w-4 mr-2" />
-                    Grid
-                  </Button>
-                  <Button
-                    variant={viewMode === 'scroll' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setViewMode('scroll')}
-                  >
-                    <ScrollText className="h-4 w-4 mr-2" />
-                    Scroll
-                  </Button>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              {userRole === 'participant' && (
+                <div className="mb-8">
+                  <VideoUpload />
                 </div>
+              )}
+              
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-6 text-white/90">Active Challenges</h2>
+                <ChallengesList />
               </div>
-              <VideoGrid videos={videos} loading={loading} viewMode={viewMode} />
-            </>
-          )}
-        </div>
-        
-        <div className="space-y-8">
-          <Leaderboard />
-          <AchievementsPanel />
-        </div>
-      </div>
+
+              <div className="mb-8">
+                <SocialMediaVideos />
+              </div>
+              
+              {isJudge ? (
+                <JudgesDashboard />
+              ) : !hasApplied ? (
+                <div className="mb-8">
+                  <JudgeApplicationForm />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold text-white/90">Featured Talents</h2>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant={viewMode === 'grid' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setViewMode('grid')}
+                      >
+                        <Grid className="h-4 w-4 mr-2" />
+                        Grid
+                      </Button>
+                      <Button
+                        variant={viewMode === 'scroll' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setViewMode('scroll')}
+                      >
+                        <ScrollText className="h-4 w-4 mr-2" />
+                        Scroll
+                      </Button>
+                    </div>
+                  </div>
+                  <VideoGrid videos={videos} loading={loading} viewMode={viewMode} />
+                </>
+              )}
+            </div>
+            
+            <div className="space-y-8">
+              <Leaderboard />
+              <AchievementsPanel />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
