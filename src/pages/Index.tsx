@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthUI } from "@/components/AuthUI";
+import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
 import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
@@ -24,10 +24,26 @@ const Index = () => {
     // Set up auth state listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       if (_event === 'SIGNED_IN') {
         setAuthError(null);
+        
+        // Create or update profile with role
+        if (session?.user) {
+          const { error } = await supabase
+            .from('profiles')
+            .upsert({
+              id: session.user.id,
+              role: session.user.user_metadata.role || 'voter',
+              updated_at: new Date().toISOString(),
+            });
+
+          if (error) {
+            console.error('Error updating profile:', error);
+          }
+        }
+
         toast({
           title: "Welcome! 🎉",
           description: "Successfully signed in",
@@ -46,7 +62,7 @@ const Index = () => {
 
   useEffect(() => {
     const loadVideos = async () => {
-      if (!session) return; // Only fetch videos if user is authenticated
+      if (!session) return;
       
       try {
         setLoading(true);
@@ -81,7 +97,7 @@ const Index = () => {
   }, [session, toast]);
 
   if (!session) {
-    return <AuthUI authError={authError} />;
+    return <RoleAuthUI authError={authError} />;
   }
 
   return (
