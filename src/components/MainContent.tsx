@@ -7,6 +7,7 @@ import { JudgesDashboard } from "@/components/judges/JudgesDashboard";
 import { JudgeApplicationForm } from "@/components/judges/JudgeApplicationForm";
 import { AdminDashboard } from "@/components/judges/AdminDashboard";
 import { ChallengesList } from "@/components/challenges/ChallengesList";
+import { SocialMediaVideos } from "@/components/social/SocialMediaVideos";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -104,6 +105,11 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-6 text-white/90">Active Challenges</h2>
             <ChallengesList />
+          </div>
+
+          {/* Add SocialMediaVideos component */}
+          <div className="mb-8">
+            <SocialMediaVideos />
           </div>
           
           {isAdmin ? (
