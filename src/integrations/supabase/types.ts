@@ -441,6 +441,30 @@ export type Database = {
           },
         ]
       }
+      participant_levels: {
+        Row: {
+          benefits: string[] | null
+          created_at: string | null
+          level: number
+          min_votes: number
+          name: string
+        }
+        Insert: {
+          benefits?: string[] | null
+          created_at?: string | null
+          level: number
+          min_votes: number
+          name: string
+        }
+        Update: {
+          benefits?: string[] | null
+          created_at?: string | null
+          level?: number
+          min_votes?: number
+          name?: string
+        }
+        Relationships: []
+      }
       payment_methods: {
         Row: {
           created_at: string | null
@@ -562,8 +586,11 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           id: string
+          notification_preferences: Json | null
+          participant_level: number | null
           role: string | null
           total_points: number | null
+          total_votes: number | null
           updated_at: string
           username: string | null
           wallet_address: string | null
@@ -572,8 +599,11 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           id: string
+          notification_preferences?: Json | null
+          participant_level?: number | null
           role?: string | null
           total_points?: number | null
+          total_votes?: number | null
           updated_at?: string
           username?: string | null
           wallet_address?: string | null
@@ -582,8 +612,11 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           id?: string
+          notification_preferences?: Json | null
+          participant_level?: number | null
           role?: string | null
           total_points?: number | null
+          total_votes?: number | null
           updated_at?: string
           username?: string | null
           wallet_address?: string | null
@@ -628,6 +661,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      social_media_connections: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_following: boolean | null
+          last_verified_at: string | null
+          platform: string
+          platform_user_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_following?: boolean | null
+          last_verified_at?: string | null
+          platform: string
+          platform_user_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_following?: boolean | null
+          last_verified_at?: string | null
+          platform?: string
+          platform_user_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      social_media_videos: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          engagement_count: number | null
+          id: string
+          platform: string
+          platform_video_id: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+          video_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          engagement_count?: number | null
+          id?: string
+          platform: string
+          platform_video_id?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+          video_url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          engagement_count?: number | null
+          id?: string
+          platform?: string
+          platform_video_id?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+          video_url?: string
+        }
+        Relationships: []
       }
       sponsored_ads: {
         Row: {
@@ -725,6 +830,33 @@ export type Database = {
           status?: string | null
           subject?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      token_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          description: string | null
+          id: string
+          transaction_type: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          transaction_type: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          transaction_type?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -1031,6 +1163,7 @@ export type Database = {
           is_verified: boolean | null
           opay_wallet_id: string | null
           phone_number: string | null
+          social_media_links: Json | null
           updated_at: string | null
         }
         Insert: {
@@ -1044,6 +1177,7 @@ export type Database = {
           is_verified?: boolean | null
           opay_wallet_id?: string | null
           phone_number?: string | null
+          social_media_links?: Json | null
           updated_at?: string | null
         }
         Update: {
@@ -1057,6 +1191,7 @@ export type Database = {
           is_verified?: boolean | null
           opay_wallet_id?: string | null
           phone_number?: string | null
+          social_media_links?: Json | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1132,6 +1267,7 @@ export type Database = {
           music_title: string | null
           music_url: string | null
           shares_count: number | null
+          social_media_source: Json | null
           thumbnail_url: string | null
           title: string
           updated_at: string | null
@@ -1150,6 +1286,7 @@ export type Database = {
           music_title?: string | null
           music_url?: string | null
           shares_count?: number | null
+          social_media_source?: Json | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string | null
@@ -1168,6 +1305,7 @@ export type Database = {
           music_title?: string | null
           music_url?: string | null
           shares_count?: number | null
+          social_media_source?: Json | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
@@ -1192,11 +1330,53 @@ export type Database = {
           },
         ]
       }
+      video_engagement_tracking: {
+        Row: {
+          created_at: string | null
+          engagement_type: string
+          id: string
+          is_rewarded: boolean | null
+          platform: string
+          reward_amount: number | null
+          user_id: string | null
+          video_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          engagement_type: string
+          id?: string
+          is_rewarded?: boolean | null
+          platform: string
+          reward_amount?: number | null
+          user_id?: string | null
+          video_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          engagement_type?: string
+          id?: string
+          is_rewarded?: boolean | null
+          platform?: string
+          reward_amount?: number | null
+          user_id?: string | null
+          video_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_engagement_tracking_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "social_media_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       video_interactions: {
         Row: {
           created_at: string | null
           id: string
           interaction_type: string
+          tokens_spent: number | null
           user_id: string
           video_id: string
         }
@@ -1204,6 +1384,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           interaction_type: string
+          tokens_spent?: number | null
           user_id: string
           video_id: string
         }
@@ -1211,6 +1392,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           interaction_type?: string
+          tokens_spent?: number | null
           user_id?: string
           video_id?: string
         }

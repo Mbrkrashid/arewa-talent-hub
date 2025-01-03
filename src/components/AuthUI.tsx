@@ -15,6 +15,10 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
   const [loginError, setLoginError] = useState<string | null>(authError);
   const [isParticipant, setIsParticipant] = useState(false);
 
+  // Get the current site URL for redirect
+  const siteUrl = window.location.origin;
+  console.log("Current site URL for redirect:", siteUrl);
+
   useEffect(() => {
     console.log("Setting up auth state change listener");
     const {
@@ -97,7 +101,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
                 },
               }}
               providers={["google"]}
-              redirectTo={window.location.origin}
+              redirectTo={`${siteUrl}/`}
               view="sign_up"
               localization={{
                 variables: {
