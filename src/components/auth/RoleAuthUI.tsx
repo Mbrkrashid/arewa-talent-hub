@@ -4,10 +4,16 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { Video, Users, Trophy } from 'lucide-react';
+import { Video, Trophy } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export const RoleAuthUI = ({ authError }: { authError: any }) => {
   const [selectedRole, setSelectedRole] = useState<'participant' | 'voter' | null>(null);
+  const { toast } = useToast();
+  
+  // Get the current site URL for redirect
+  const siteUrl = window.location.origin;
+  console.log("Current site URL for redirect:", siteUrl);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex flex-col items-center justify-center p-4">
@@ -67,10 +73,32 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
                 },
               }}
               providers={['google']}
-              redirectTo={window.location.origin}
+              redirectTo={`${siteUrl}/`}
               onlyThirdPartyProviders={false}
-              additionalData={{
-                role: selectedRole,
+              view="sign_up"
+              localization={{
+                variables: {
+                  sign_up: {
+                    email_label: 'Email address',
+                    password_label: 'Create a Password',
+                    email_input_placeholder: 'Your email address',
+                    password_input_placeholder: 'Your password',
+                    button_label: `Sign up as ${selectedRole}`,
+                    loading_button_label: 'Signing up ...',
+                    social_provider_text: 'Continue with {{provider}}',
+                    link_text: 'Already have an account? Sign in',
+                  },
+                  sign_in: {
+                    email_label: 'Email address',
+                    password_label: 'Your password',
+                    email_input_placeholder: 'Your email address',
+                    password_input_placeholder: 'Your password',
+                    button_label: 'Sign in',
+                    loading_button_label: 'Signing in ...',
+                    social_provider_text: 'Continue with {{provider}}',
+                    link_text: "Don't have an account? Sign up",
+                  },
+                },
               }}
             />
             {authError && (

@@ -16,8 +16,11 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Setting up auth state change listener");
+    
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Current session:", session);
       setSession(session);
     });
 
@@ -25,7 +28,9 @@ const Index = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log("Auth state changed:", _event, session);
       setSession(session);
+      
       if (_event === 'SIGNED_IN') {
         setAuthError(null);
         
@@ -46,20 +51,6 @@ const Index = () => {
               description: "Failed to update profile. Please try again.",
               variant: "destructive",
             });
-          } else {
-            // Create token wallet for new users
-            const { error: walletError } = await supabase
-              .from('token_wallets')
-              .upsert({
-                user_id: session.user.id,
-                balance: 100, // Starting balance for new users
-                total_earned: 100,
-                updated_at: new Date().toISOString(),
-              });
-
-            if (walletError) {
-              console.error('Error creating wallet:', walletError);
-            }
           }
         }
 
@@ -68,11 +59,18 @@ const Index = () => {
           description: "Successfully signed in",
         });
       }
+      
       if (_event === 'SIGNED_OUT') {
+        setAuthError(null);
         toast({
           title: "Goodbye! 👋",
           description: "Successfully signed out",
         });
+      }
+      
+      if (_event === 'USER_DELETED') {
+        setSession(null);
+        setAuthError(null);
       }
     });
 
