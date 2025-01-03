@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
+import { Video, Users, Trophy } from 'lucide-react';
 
 export const RoleAuthUI = ({ authError }: { authError: any }) => {
   const [selectedRole, setSelectedRole] = useState<'participant' | 'voter' | null>(null);
@@ -28,10 +29,11 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
             <Button
               variant="outline"
               size="lg"
-              className="h-32 bg-primary/20"
+              className="h-32 bg-primary/20 hover:bg-primary/30 transition-all"
               onClick={() => setSelectedRole('participant')}
             >
-              <div className="text-center">
+              <div className="text-center space-y-2">
+                <Video className="h-8 w-8 mx-auto text-primary" />
                 <h3 className="text-lg font-semibold">Participant</h3>
                 <p className="text-sm text-gray-400">Showcase your talent</p>
               </div>
@@ -39,10 +41,11 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
             <Button
               variant="outline"
               size="lg"
-              className="h-32 bg-primary/20"
+              className="h-32 bg-primary/20 hover:bg-primary/30 transition-all"
               onClick={() => setSelectedRole('voter')}
             >
-              <div className="text-center">
+              <div className="text-center space-y-2">
+                <Trophy className="h-8 w-8 mx-auto text-yellow-500" />
                 <h3 className="text-lg font-semibold">Voter</h3>
                 <p className="text-sm text-gray-400">Support talents</p>
               </div>
@@ -63,7 +66,7 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
                   },
                 },
               }}
-              providers={[]}
+              providers={['google']}
               redirectTo={window.location.origin}
               onlyThirdPartyProviders={false}
               additionalData={{

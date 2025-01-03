@@ -41,6 +41,25 @@ const Index = () => {
 
           if (error) {
             console.error('Error updating profile:', error);
+            toast({
+              title: "Profile Error",
+              description: "Failed to update profile. Please try again.",
+              variant: "destructive",
+            });
+          } else {
+            // Create token wallet for new users
+            const { error: walletError } = await supabase
+              .from('token_wallets')
+              .upsert({
+                user_id: session.user.id,
+                balance: 100, // Starting balance for new users
+                total_earned: 100,
+                updated_at: new Date().toISOString(),
+              });
+
+            if (walletError) {
+              console.error('Error creating wallet:', walletError);
+            }
           }
         }
 
