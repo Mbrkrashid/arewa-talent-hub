@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Youtube, Tiktok, Instagram, ExternalLink } from "lucide-react";
+import { Youtube, BrandTiktok, Instagram, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,7 +29,14 @@ export const SocialMediaVideos = () => {
           .order('engagement_count', { ascending: false });
 
         if (error) throw error;
-        setVideos(data || []);
+        
+        // Transform the data to match our SocialVideo type
+        const transformedData = data?.map(video => ({
+          ...video,
+          platform: video.platform.toLowerCase() as 'youtube' | 'tiktok' | 'instagram'
+        })) || [];
+        
+        setVideos(transformedData);
       } catch (error) {
         console.error('Error fetching social videos:', error);
         toast({
@@ -70,7 +77,7 @@ export const SocialMediaVideos = () => {
       case 'youtube':
         return <Youtube className="h-5 w-5 text-red-500" />;
       case 'tiktok':
-        return <Tiktok className="h-5 w-5" />;
+        return <BrandTiktok className="h-5 w-5" />;
       case 'instagram':
         return <Instagram className="h-5 w-5 text-pink-500" />;
       default:
