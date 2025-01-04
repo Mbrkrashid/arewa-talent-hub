@@ -14,7 +14,7 @@ export const Header = () => {
           <div className="flex items-center gap-2">
             <Gamepad2 className="h-8 w-8 text-primary animate-pulse" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Arewa Talent Hub
+              Northern Nigeria Talents
             </h1>
           </div>
           
