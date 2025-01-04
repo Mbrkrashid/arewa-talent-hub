@@ -36,8 +36,14 @@ export const JudgesPanel = () => {
         .limit(3);
 
       if (!error && data) {
-        setJudges(data);
-        console.log("Fetched judges:", data);
+        // Transform the data to ensure status is either 'online' or 'offline'
+        const transformedData = data.map(judge => ({
+          ...judge,
+          status: judge.status === 'online' ? 'online' : 'offline'
+        })) as Judge[];
+        
+        setJudges(transformedData);
+        console.log("Fetched judges:", transformedData);
       }
     };
 
