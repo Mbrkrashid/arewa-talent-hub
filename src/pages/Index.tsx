@@ -14,27 +14,15 @@ const Index = () => {
   const [authError, setAuthError] = useState<AuthError | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("Setting up auth state change listener");
     
     // Check current session
-    const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        console.log("Current session:", session);
-        if (error) throw error;
-        setSession(session);
-      } catch (err) {
-        console.error("Error checking session:", err);
-        setError("Failed to check authentication status");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkSession();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Current session:", session);
+      setSession(session);
+    });
 
     // Set up auth state listener
     const {
@@ -48,23 +36,16 @@ const Index = () => {
         
         // Create or update profile with role
         if (session?.user) {
-          try {
-            const { error } = await supabase
-              .from('profiles')
-              .upsert({
-                id: session.user.id,
-                role: session.user.user_metadata.role || 'voter',
-                updated_at: new Date().toISOString(),
-              });
-
-            if (error) throw error;
-
-            toast({
-              title: "Welcome! 🎉",
-              description: "Successfully signed in",
+          const { error } = await supabase
+            .from('profiles')
+            .upsert({
+              id: session.user.id,
+              role: session.user.user_metadata.role || 'voter',
+              updated_at: new Date().toISOString(),
             });
-          } catch (err) {
-            console.error('Error updating profile:', err);
+
+          if (error) {
+            console.error('Error updating profile:', error);
             toast({
               title: "Profile Error",
               description: "Failed to update profile. Please try again.",
@@ -72,35 +53,16 @@ const Index = () => {
             });
           }
         }
+
+        toast({
+          title: "Welcome! 🎉",
+          description: "Successfully signed in",
+        });
       }
     });
 
     return () => subscription.unsubscribe();
   }, [toast]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-primary/20 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <p className="text-red-500">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   if (!session) {
     return <RoleAuthUI authError={authError} />;
