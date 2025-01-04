@@ -5,24 +5,29 @@ import { AuthUI } from "@/components/AuthUI";
 import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
+import { fetchVideos } from "@/services/videoService";
+import type { Video } from "@/services/videoService";
 
 const Index = () => {
   const { toast } = useToast();
   const [session, setSession] = useState(null);
   const [authError, setAuthError] = useState(null);
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
+    // Set up auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (_event === 'SIGNED_IN') {
+        setAuthError(null);
         toast({
           title: "Welcome! 🎉",
           description: "Successfully signed in",
@@ -40,38 +45,28 @@ const Index = () => {
   }, [toast]);
 
   useEffect(() => {
-    const fetchVideos = async () => {
+    const loadVideos = async () => {
+      if (!session) return; // Only fetch videos if user is authenticated
+      
       try {
-        console.log('Fetching videos from Supabase...');
+        setLoading(true);
+        const { data, error } = await fetchVideos();
         
-        // First, get all vendors
-        const { data: vendors, error: vendorsError } = await supabase
-          .from('vendors')
-          .select('id, business_name');
+        if (error) {
+          console.error('Error in loadVideos:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load videos. Please try again later.",
+            variant: "destructive",
+          });
+          return;
+        }
 
-        if (vendorsError) throw vendorsError;
-
-        // Then get videos and join with vendors data in memory
-        const { data: videoData, error: videoError } = await supabase
-          .from('video_content')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10);
-
-        if (videoError) throw videoError;
-
-        console.log('Successfully fetched videos:', videoData);
-
-        // Combine videos with vendor data
-        const videosWithVendors = videoData.map(video => ({
-          ...video,
-          level: Math.floor((video.likes_count || 0) / 100) + 1,
-          vendors: vendors.find(v => v.id === video.vendor_id) || { business_name: "Anonymous" }
-        }));
-
-        setVideos(videosWithVendors);
+        if (data) {
+          setVideos(data);
+        }
       } catch (error) {
-        console.error('Error in fetchVideos:', error);
+        console.error('Error in loadVideos:', error);
         toast({
           title: "Error",
           description: "Failed to load videos. Please try again later.",
@@ -82,8 +77,8 @@ const Index = () => {
       }
     };
 
-    fetchVideos();
-  }, [toast]);
+    loadVideos();
+  }, [session, toast]);
 
   if (!session) {
     return <AuthUI authError={authError} />;
