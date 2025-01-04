@@ -5,13 +5,13 @@ import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
 import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
-import { fetchVideos } from "@/services/videoService";
 import type { Video } from "@/services/videoService";
+import { AuthError, Session, User } from "@supabase/supabase-js";
 
 const Index = () => {
   const { toast } = useToast();
-  const [session, setSession] = useState(null);
-  const [authError, setAuthError] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [authError, setAuthError] = useState<AuthError | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,11 +27,11 @@ const Index = () => {
     // Set up auth state listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log("Auth state changed:", _event, session);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session);
       setSession(session);
       
-      if (_event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN') {
         setAuthError(null);
         
         // Create or update profile with role
@@ -60,7 +60,7 @@ const Index = () => {
         });
       }
       
-      if (_event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT') {
         setAuthError(null);
         toast({
           title: "Goodbye! 👋",
@@ -68,7 +68,7 @@ const Index = () => {
         });
       }
       
-      if (_event === 'USER_DELETED') {
+      if (event === 'USER_DELETED' as any) {
         setSession(null);
         setAuthError(null);
       }
@@ -76,42 +76,6 @@ const Index = () => {
 
     return () => subscription.unsubscribe();
   }, [toast]);
-
-  useEffect(() => {
-    const loadVideos = async () => {
-      if (!session) return;
-      
-      try {
-        setLoading(true);
-        const { data, error } = await fetchVideos();
-        
-        if (error) {
-          console.error('Error in loadVideos:', error);
-          toast({
-            title: "Error",
-            description: "Failed to load videos. Please try again later.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (data) {
-          setVideos(data);
-        }
-      } catch (error) {
-        console.error('Error in loadVideos:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load videos. Please try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadVideos();
-  }, [session, toast]);
 
   if (!session) {
     return <RoleAuthUI authError={authError} />;
