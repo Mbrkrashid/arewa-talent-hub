@@ -6,7 +6,7 @@ import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
 import type { Video } from "@/services/videoService";
-import { AuthError, Session, User } from "@supabase/supabase-js";
+import { AuthError, Session } from "@supabase/supabase-js";
 
 const Index = () => {
   const { toast } = useToast();
@@ -58,19 +58,6 @@ const Index = () => {
           title: "Welcome! 🎉",
           description: "Successfully signed in",
         });
-      }
-      
-      if (event === 'SIGNED_OUT') {
-        setAuthError(null);
-        toast({
-          title: "Goodbye! 👋",
-          description: "Successfully signed out",
-        });
-      }
-      
-      if (event === 'USER_DELETED' as any) {
-        setSession(null);
-        setAuthError(null);
       }
     });
 
