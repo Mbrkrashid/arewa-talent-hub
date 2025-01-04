@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { JudgesPanel } from "@/components/judges/JudgesPanel";
 import { AnimatedHeader } from "@/components/layout/AnimatedHeader";
 import { ActionButtons } from "@/components/actions/ActionButtons";
 import { ContentSection } from "@/components/content/ContentSection";
@@ -60,7 +59,6 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
         <ParticipantLevel level={participantLevel} totalVotes={totalVotes} />
       )}
 
-      <JudgesPanel />
       <ContentSection userRole={userRole} />
     </div>
   );
