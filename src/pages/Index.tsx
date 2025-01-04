@@ -43,26 +43,33 @@ const Index = () => {
     const fetchVideos = async () => {
       try {
         console.log('Fetching videos from Supabase...');
-        const { data, error } = await supabase
+        
+        // First, get all vendors
+        const { data: vendors, error: vendorsError } = await supabase
+          .from('vendors')
+          .select('id, business_name');
+
+        if (vendorsError) throw vendorsError;
+
+        // Then get videos and join with vendors data in memory
+        const { data: videoData, error: videoError } = await supabase
           .from('video_content')
-          .select('*, vendors!inner(business_name)')
+          .select('*')
           .order('created_at', { ascending: false })
           .limit(10);
 
-        if (error) {
-          console.error('Error fetching videos:', error);
-          throw error;
-        }
+        if (videoError) throw videoError;
 
-        console.log('Successfully fetched videos:', data);
+        console.log('Successfully fetched videos:', videoData);
 
-        const videosWithLevel = data?.map(video => ({
+        // Combine videos with vendor data
+        const videosWithVendors = videoData.map(video => ({
           ...video,
           level: Math.floor((video.likes_count || 0) / 100) + 1,
-          vendors: video.vendors || { business_name: "Anonymous" }
-        })) || [];
+          vendors: vendors.find(v => v.id === video.vendor_id) || { business_name: "Anonymous" }
+        }));
 
-        setVideos(videosWithLevel);
+        setVideos(videosWithVendors);
       } catch (error) {
         console.error('Error in fetchVideos:', error);
         toast({
