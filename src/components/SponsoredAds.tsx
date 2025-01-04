@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles } from "lucide-react";
-import { Database } from "@/integrations/supabase/types";
 
-type SponsoredAd = Database['public']['Tables']['sponsored_ads']['Row'];
+interface SponsoredAd {
+  id: string;
+  title: string;
+  description: string;
+  image_url: string;
+  link_url: string;
+}
 
 export const SponsoredAds = () => {
   const [ads, setAds] = useState<SponsoredAd[]>([]);
@@ -12,9 +17,9 @@ export const SponsoredAds = () => {
   useEffect(() => {
     const fetchAds = async () => {
       const { data, error } = await supabase
-        .from('sponsored_ads')
-        .select('*')
-        .eq('status', 'active');
+        .from("sponsored_ads")
+        .select("*")
+        .eq("status", "active");
 
       if (!error && data) {
         setAds(data);
@@ -38,10 +43,10 @@ export const SponsoredAds = () => {
             key={ad.id}
             className="bg-black/50 border-primary/20 overflow-hidden group hover:border-primary/40 transition-colors"
           >
-            <a href={ad.link_url || '#'} target="_blank" rel="noopener noreferrer">
+            <a href={ad.link_url} target="_blank" rel="noopener noreferrer">
               <div className="relative aspect-video">
                 <img
-                  src={ad.image_url || ''}
+                  src={ad.image_url}
                   alt={ad.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

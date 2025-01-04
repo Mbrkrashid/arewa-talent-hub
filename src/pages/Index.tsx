@@ -1,62 +1,37 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
+import { AuthUI } from "@/components/AuthUI";
 import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
-import type { Video } from "@/services/videoService";
-import { AuthError, Session } from "@supabase/supabase-js";
 
 const Index = () => {
   const { toast } = useToast();
-  const [session, setSession] = useState<Session | null>(null);
-  const [authError, setAuthError] = useState<AuthError | null>(null);
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [session, setSession] = useState(null);
+  const [authError, setAuthError] = useState(null);
+  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Setting up auth state change listener");
-    
-    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Current session:", session);
       setSession(session);
     });
 
-    // Set up auth state listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session);
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      
-      if (event === 'SIGNED_IN') {
-        setAuthError(null);
-        
-        // Create or update profile with role
-        if (session?.user) {
-          const { error } = await supabase
-            .from('profiles')
-            .upsert({
-              id: session.user.id,
-              role: session.user.user_metadata.role || 'voter',
-              updated_at: new Date().toISOString(),
-            });
-
-          if (error) {
-            console.error('Error updating profile:', error);
-            toast({
-              title: "Profile Error",
-              description: "Failed to update profile. Please try again.",
-              variant: "destructive",
-            });
-          }
-        }
-
+      if (_event === 'SIGNED_IN') {
         toast({
           title: "Welcome! 🎉",
           description: "Successfully signed in",
+        });
+      }
+      if (_event === 'SIGNED_OUT') {
+        toast({
+          title: "Goodbye! 👋",
+          description: "Successfully signed out",
         });
       }
     });
@@ -64,8 +39,47 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [toast]);
 
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        console.log('Fetching videos from Supabase...');
+        const { data, error } = await supabase
+          .from('video_content')
+          .select('*, vendors!inner(business_name)')
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (error) {
+          console.error('Error fetching videos:', error);
+          throw error;
+        }
+
+        console.log('Successfully fetched videos:', data);
+
+        const videosWithLevel = data?.map(video => ({
+          ...video,
+          level: Math.floor((video.likes_count || 0) / 100) + 1,
+          vendors: video.vendors || { business_name: "Anonymous" }
+        })) || [];
+
+        setVideos(videosWithLevel);
+      } catch (error) {
+        console.error('Error in fetchVideos:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load videos. Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, [toast]);
+
   if (!session) {
-    return <RoleAuthUI authError={authError} />;
+    return <AuthUI authError={authError} />;
   }
 
   return (

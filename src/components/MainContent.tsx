@@ -1,10 +1,11 @@
+import { VideoGrid } from "@/components/VideoGrid";
+import { VideoUpload } from "@/components/VideoUpload";
+import { Leaderboard } from "@/components/Leaderboard";
+import { AchievementsPanel } from "@/components/achievements/AchievementsPanel";
+import { WalletConnect } from "@/components/wallet/WalletConnect";
+import { JudgesDashboard } from "@/components/judges/JudgesDashboard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { AnimatedHeader } from "@/components/layout/AnimatedHeader";
-import { ActionButtons } from "@/components/actions/ActionButtons";
-import { ContentSection } from "@/components/content/ContentSection";
-import { ParticipantLevel } from "@/components/ParticipantLevel";
 
 interface MainContentProps {
   videos: any[];
@@ -12,54 +13,46 @@ interface MainContentProps {
 }
 
 export const MainContent = ({ videos, loading }: MainContentProps) => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [userRole, setUserRole] = useState<'participant' | 'voter' | null>(null);
-  const [participantLevel, setParticipantLevel] = useState(1);
-  const [totalVotes, setTotalVotes] = useState(0);
+  const [isJudge, setIsJudge] = useState(false);
 
   useEffect(() => {
-    const checkUserStatus = async () => {
+    const checkJudgeStatus = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Check if user is an admin
-        const { data: admin } = await supabase
-          .from("admin_users")
+        const { data: judge } = await supabase
+          .from("judges")
           .select("id")
-          .eq("id", user.id)
+          .eq("profile_id", user.id)
           .single();
-        
-        setIsAdmin(!!admin);
-
-        // Get user role and level from profiles
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role, participant_level, total_votes")
-          .eq("id", user.id)
-          .single();
-
-        setUserRole(profile?.role as 'participant' | 'voter' || null);
-        setParticipantLevel(profile?.participant_level || 1);
-        setTotalVotes(profile?.total_votes || 0);
+        setIsJudge(!!judge);
       }
     };
 
-    checkUserStatus();
+    checkJudgeStatus();
   }, []);
 
-  if (isAdmin) {
-    return <AdminDashboard />;
-  }
-
   return (
-    <div className="space-y-8">
-      <AnimatedHeader />
-      <ActionButtons />
-
-      {userRole === 'participant' && (
-        <ParticipantLevel level={participantLevel} totalVotes={totalVotes} />
-      )}
-
-      <ContentSection userRole={userRole} />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-2">
+        <div className="mb-8">
+          <VideoUpload />
+        </div>
+        <div className="mb-8">
+          <WalletConnect />
+        </div>
+        {isJudge ? (
+          <JudgesDashboard />
+        ) : (
+          <>
+            <h2 className="text-xl font-semibold mb-6 text-white/90">Featured Talents</h2>
+            <VideoGrid videos={videos} loading={loading} />
+          </>
+        )}
+      </div>
+      <div className="space-y-8">
+        <Leaderboard />
+        <AchievementsPanel />
+      </div>
     </div>
   );
 };

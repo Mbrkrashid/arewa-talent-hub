@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Award, Share2, Star, Trophy, Crown } from "lucide-react";
+import { Heart, Award, Share2, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -94,19 +94,6 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
     }
   };
 
-  const getLevelBadge = (level: number) => {
-    switch (level) {
-      case 5:
-        return <Crown className="h-4 w-4 text-yellow-500 animate-pulse" />;
-      case 4:
-        return <Trophy className="h-4 w-4 text-purple-500 animate-pulse" />;
-      case 3:
-        return <Award className="h-4 w-4 text-blue-500 animate-pulse" />;
-      default:
-        return <Star className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
   return (
     <Card className="overflow-hidden transition-all hover:scale-[1.02] duration-300 bg-black/50 border-primary/20">
       <div className="relative aspect-video group">
@@ -121,7 +108,7 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
           <div className="flex items-center gap-2">
             <p className="text-white/80 text-sm">{artist}</p>
             <div className="flex items-center gap-1">
-              {getLevelBadge(level)}
+              <Star className="h-3 w-3 text-yellow-500" />
               <span className="text-xs text-gray-400">Level {level}</span>
             </div>
           </div>

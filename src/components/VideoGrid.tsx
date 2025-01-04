@@ -1,5 +1,4 @@
 import { VideoCard } from "@/components/VideoCard";
-import { VideoScroll } from "@/components/VideoScroll";
 
 interface Video {
   id: string;
@@ -16,14 +15,9 @@ interface Video {
 interface VideoGridProps {
   videos: Video[];
   loading: boolean;
-  viewMode?: "grid" | "scroll";
 }
 
-export const VideoGrid = ({ videos, loading, viewMode = "grid" }: VideoGridProps) => {
-  if (viewMode === "scroll") {
-    return <VideoScroll videos={videos} loading={loading} />;
-  }
-
+export const VideoGrid = ({ videos, loading }: VideoGridProps) => {
   if (loading) {
     return (
       <div className="col-span-2 text-center py-12 text-gray-400">
