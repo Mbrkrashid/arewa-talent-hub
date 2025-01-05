@@ -1,4 +1,4 @@
-import { Gamepad2, Upload, Menu, X, LogOut } from "lucide-react";
+import { Gamepad2, Upload, Menu, X, LogOut, Youtube, Facebook, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TokenBalance } from "@/components/TokenBalance";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,24 @@ export const Header = () => {
       description: "Come back soon!",
     });
   };
+
+  const socialLinks = [
+    { 
+      icon: Youtube, 
+      url: "https://youtube.com/your-channel",
+      color: "text-red-500" 
+    },
+    { 
+      icon: Facebook, 
+      url: "https://facebook.com/your-page",
+      color: "text-blue-500" 
+    },
+    { 
+      icon: Instagram, 
+      url: "https://instagram.com/your-profile",
+      color: "text-pink-500" 
+    },
+  ];
 
   return (
     <header className="border-b border-primary/20 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
@@ -44,6 +62,22 @@ export const Header = () => {
 
           {/* Desktop navigation */}
           <div className="hidden lg:flex items-center gap-4">
+            <div className="flex items-center gap-4">
+              {socialLinks.map((link, index) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${link.color} hover:opacity-80 transition-opacity`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                );
+              })}
+            </div>
             <TokenBalance />
             <Button 
               className="bg-primary hover:bg-primary/90 animate-pulse group"
@@ -66,6 +100,22 @@ export const Header = () => {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="lg:hidden mt-4 space-y-4 animate-fade-in">
+            <div className="flex justify-center gap-6">
+              {socialLinks.map((link, index) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${link.color} hover:opacity-80 transition-opacity`}
+                  >
+                    <Icon className="h-6 w-6" />
+                  </a>
+                );
+              })}
+            </div>
             <div className="flex justify-center">
               <TokenBalance />
             </div>

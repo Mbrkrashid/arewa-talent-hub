@@ -76,10 +76,15 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
             
             <div className="space-y-4 text-center md:text-left">
               <h2 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-2 justify-center md:justify-start">
-                <Sparkles className="h-8 w-8 text-yellow-500 animate-pulse" />
-                Win ₦2,000,000 in Prizes!
+                <Trophy className="h-8 w-8 text-yellow-500 animate-bounce" />
+                Win Amazing Prizes!
               </h2>
-              <p className="text-xl text-gray-400">Join Northern Nigeria's biggest talent hunt competition</p>
+              <div className="space-y-2">
+                <p className="text-xl text-primary">🏆 1st Prize: ₦2,000,000</p>
+                <p className="text-lg text-secondary">🥈 2nd Prize: ₦1,000,000</p>
+                <p className="text-lg text-accent">🥉 3rd Prize: ₦500,000</p>
+                <p className="text-sm text-gray-400">Plus additional rewards for most viewed talents!</p>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
