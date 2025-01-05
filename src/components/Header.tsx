@@ -3,13 +3,31 @@ import { Button } from "@/components/ui/button";
 import { TokenBalance } from "@/components/TokenBalance";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState<'participant' | 'voter' | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        
+        setUserRole(profile?.role as 'participant' | 'voter' || null);
+      }
+    };
+
+    checkUserRole();
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -79,13 +97,15 @@ export const Header = () => {
               })}
             </div>
             <TokenBalance />
-            <Button 
-              className="bg-primary hover:bg-primary/90 animate-pulse group"
-              onClick={() => navigate("/upload")}
-            >
-              <Upload className="h-4 w-4 mr-2 group-hover:animate-bounce" />
-              Share Your Talent
-            </Button>
+            {userRole === 'participant' && (
+              <Button 
+                className="bg-primary hover:bg-primary/90 animate-pulse group"
+                onClick={() => navigate("/upload")}
+              >
+                <Upload className="h-4 w-4 mr-2 group-hover:animate-bounce" />
+                Share Your Talent
+              </Button>
+            )}
             <Button
               variant="outline"
               className="border-primary/20 hover:bg-primary/10 transition-colors group"
@@ -119,13 +139,15 @@ export const Header = () => {
             <div className="flex justify-center">
               <TokenBalance />
             </div>
-            <Button 
-              className="bg-primary hover:bg-primary/90 w-full group"
-              onClick={() => navigate("/upload")}
-            >
-              <Upload className="h-4 w-4 mr-2 group-hover:animate-bounce" />
-              Share Your Talent
-            </Button>
+            {userRole === 'participant' && (
+              <Button 
+                className="bg-primary hover:bg-primary/90 w-full group"
+                onClick={() => navigate("/upload")}
+              >
+                <Upload className="h-4 w-4 mr-2 group-hover:animate-bounce" />
+                Share Your Talent
+              </Button>
+            )}
             <Button
               variant="outline"
               className="border-primary/20 w-full group"
