@@ -86,7 +86,6 @@ export const VideoCategoryGrid = () => {
                   title={video.title}
                   artist={video.vendors?.business_name || "Anonymous"}
                   votes={video.likes_count}
-                  views={video.views_count}
                   thumbnailUrl={video.thumbnail_url || "/placeholder.svg"}
                   level={Math.floor((video.likes_count || 0) / 100) + 1}
                 />

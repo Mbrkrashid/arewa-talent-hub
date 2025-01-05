@@ -38,7 +38,12 @@ export const JudgesOverlay = ({ videoId }: { videoId: string }) => {
         .limit(3);
 
       if (data) {
-        setJudges(data);
+        // Convert status to correct type
+        const typedData = data.map(judge => ({
+          ...judge,
+          status: judge.status === 'online' ? 'online' : 'offline'
+        })) as Judge[];
+        setJudges(typedData);
       }
     };
 
