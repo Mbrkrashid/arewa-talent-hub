@@ -13,7 +13,7 @@ import { AuthError, Session } from "@supabase/supabase-js";
 const Index = () => {
   const { toast } = useToast();
   const [session, setSession] = useState<Session | null>(null);
-  const [authError, setAuthError] = useState<AuthError | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentFeature, setCurrentFeature] = useState(0);
@@ -162,7 +162,7 @@ const Index = () => {
           </div>
         </div>
 
-        <AuthUI authError={authError} />
+        <AuthUI authError={authError?.message || null} />
       </div>
     );
   }
