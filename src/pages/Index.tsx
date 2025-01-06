@@ -9,6 +9,8 @@ import { Gamepad2, Trophy, Star, Music2, Mic, Sparkles, Heart, Award } from "luc
 import { Card } from "@/components/ui/card";
 import type { Video } from "@/services/videoService";
 import { Session } from "@supabase/supabase-js";
+import { WebApp } from '@twa-dev/sdk';
+import { useWeb3 } from "@/contexts/Web3Context";
 
 const Index = () => {
   const { toast } = useToast();
@@ -17,6 +19,7 @@ const Index = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentFeature, setCurrentFeature] = useState(0);
+  const { isTelegram } = useWeb3();
 
   const features = [
     {
@@ -49,6 +52,19 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    if (isTelegram) {
+      // Initialize Telegram WebApp
+      WebApp.ready();
+      console.log("Telegram WebApp initialized");
+      
+      // Handle Telegram user authentication
+      const telegramUser = WebApp.initDataUnsafe.user;
+      if (telegramUser) {
+        console.log("Telegram user:", telegramUser);
+        // You can implement custom authentication logic here
+      }
+    }
+
     console.log("Setting up auth state change listener");
     
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -72,7 +88,7 @@ const Index = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [toast]);
+  }, [toast, isTelegram]);
 
   if (!session) {
     return (
