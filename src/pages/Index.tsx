@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
+import { AuthUI } from "@/components/AuthUI";
 import { SponsoredAds } from "@/components/SponsoredAds";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
 import { Gamepad2, Trophy, Star, Music2, Mic, Sparkles, Heart, Award } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Video } from "@/services/videoService";
 import { AuthError, Session } from "@supabase/supabase-js";
@@ -78,6 +77,8 @@ const Index = () => {
   if (!session) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/20 via-black to-secondary/20">
+        <Header />
+        
         {/* Hero Section */}
         <div className="container mx-auto px-4 py-12 md:py-24">
           <div className="text-center space-y-6">
@@ -161,7 +162,7 @@ const Index = () => {
           </div>
         </div>
 
-        <RoleAuthUI authError={authError} />
+        <AuthUI authError={authError} />
       </div>
     );
   }
