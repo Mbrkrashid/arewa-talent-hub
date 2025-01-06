@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import Web3 from 'web3';
-import { WebApp } from '@twa-dev/sdk';
+import WebApp from "@twa-dev/sdk";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 

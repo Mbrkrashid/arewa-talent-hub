@@ -9,7 +9,7 @@ import { Gamepad2, Trophy, Star, Music2, Mic, Sparkles, Heart, Award } from "luc
 import { Card } from "@/components/ui/card";
 import type { Video } from "@/services/videoService";
 import { Session } from "@supabase/supabase-js";
-import { WebApp } from '@twa-dev/sdk';
+import WebApp from '@twa-dev/sdk';
 import { useWeb3 } from "@/contexts/Web3Context";
 
 const Index = () => {
