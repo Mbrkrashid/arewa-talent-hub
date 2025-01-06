@@ -8,7 +8,7 @@ import { MainContent } from "@/components/MainContent";
 import { Gamepad2, Trophy, Star, Music2, Mic, Sparkles, Heart, Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { Video } from "@/services/videoService";
-import { AuthError, Session } from "@supabase/supabase-js";
+import { Session } from "@supabase/supabase-js";
 
 const Index = () => {
   const { toast } = useToast();
@@ -162,7 +162,7 @@ const Index = () => {
           </div>
         </div>
 
-        <AuthUI authError={authError?.message || null} />
+        <AuthUI authError={authError} />
       </div>
     );
   }
