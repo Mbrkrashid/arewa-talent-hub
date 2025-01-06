@@ -13,7 +13,6 @@ interface AuthUIProps {
 export const AuthUI = ({ authError }: AuthUIProps) => {
   const { toast } = useToast();
   const [loginError, setLoginError] = useState<string | null>(authError);
-  const [isParticipant, setIsParticipant] = useState(false);
   const [currentAnimation, setCurrentAnimation] = useState(0);
   
   const animations = [
@@ -107,12 +106,10 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
             <Card className="relative bg-black/80 backdrop-blur-lg border-primary/20 p-8 rounded-lg shadow-2xl animate-float">
               <div className="mb-6 space-y-2 text-center">
                 <h2 className="text-2xl font-semibold text-white">
-                  {isParticipant ? "Join as Participant" : "Join as Voter"}
+                  Join Arewa Talent Hub
                 </h2>
                 <p className="text-gray-400">
-                  {isParticipant 
-                    ? "Create an account to showcase your talent" 
-                    : "Create an account to vote and earn rewards"}
+                  Create an account to participate or vote
                 </p>
               </div>
 
@@ -144,7 +141,7 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
                 localization={{
                   variables: {
                     sign_up: {
-                      button_label: isParticipant ? 'Sign up as Participant' : 'Sign up as Voter',
+                      button_label: 'Sign up',
                       loading_button_label: 'Signing up...',
                       social_provider_text: 'Continue with {{provider}}',
                       link_text: 'Already have an account? Sign in',
@@ -158,17 +155,6 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
                   },
                 }}
               />
-
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => setIsParticipant(!isParticipant)}
-                  className="text-primary hover:text-primary/80 text-sm transition-colors underline"
-                >
-                  {isParticipant 
-                    ? "Want to vote instead? Sign up as a voter" 
-                    : "Want to participate? Sign up as a talent"}
-                </button>
-              </div>
 
               {(loginError || authError) && (
                 <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
