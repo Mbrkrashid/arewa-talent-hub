@@ -28,7 +28,7 @@ export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Check if running in Telegram WebApp
-    if (WebApp.isInitialized) {
+    if (WebApp && 'initData' in WebApp) {
       setIsTelegram(true);
       console.log("Running in Telegram WebApp", WebApp.initData);
     }
