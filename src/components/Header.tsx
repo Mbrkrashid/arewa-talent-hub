@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { TokenBalance } from "@/components/TokenBalance";
+import { ChevronLeft, MoreVertical } from "lucide-react";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -30,44 +31,23 @@ export const Header = () => {
     checkAuth();
   }, []);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: "Signed out successfully",
-      description: "Come back soon!",
-    });
-  };
-
   return (
-    <header className="border-b border-primary/20 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo/Brand */}
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Arewa Talent Hub
-            </h1>
+    <header className="bg-[#1a1b1e] sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-14">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon">
+              <ChevronLeft className="h-5 w-5 text-gray-400" />
+            </Button>
+            <h1 className="text-lg font-semibold text-white">Arewa Talent Hub</h1>
           </div>
 
-          {/* Right side content */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
                 <TokenBalance />
-                {userRole === 'participant' && (
-                  <Button 
-                    className="bg-primary hover:bg-primary/90"
-                    onClick={() => navigate("/upload")}
-                  >
-                    Share Your Talent
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  className="border-primary/20 hover:bg-primary/10"
-                  onClick={handleSignOut}
-                >
-                  Sign Out
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-5 w-5 text-gray-400" />
                 </Button>
               </>
             ) : (
@@ -75,7 +55,7 @@ export const Header = () => {
                 className="bg-primary hover:bg-primary/90"
                 onClick={() => navigate("/auth")}
               >
-                Sign Up / Login
+                Connect Telegram
               </Button>
             )}
           </div>

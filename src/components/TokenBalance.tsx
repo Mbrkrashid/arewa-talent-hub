@@ -1,4 +1,4 @@
-import { Coins, Star, Trophy, Flame } from "lucide-react";
+import { Diamond } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -11,37 +11,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 
 type TokenWallet = Database['public']['Tables']['token_wallets']['Row'];
-type UserStreak = Database['public']['Tables']['user_streaks']['Row'];
 
 export const TokenBalance = () => {
   const [wallet, setWallet] = useState<TokenWallet | null>(null);
-  const [streak, setStreak] = useState<UserStreak | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Fetch wallet data
       const { data: walletData } = await supabase
         .from('token_wallets')
-        .select('*')  // Select all fields to match the type
+        .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
       if (walletData) {
         setWallet(walletData);
-      }
-
-      // Fetch streak data
-      const { data: streakData } = await supabase
-        .from('user_streaks')
-        .select('*')  // Select all fields to match the type
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (streakData) {
-        setStreak(streakData);
+        console.log("Wallet data:", walletData);
       }
     };
 
@@ -50,64 +37,23 @@ export const TokenBalance = () => {
 
   if (!wallet) return null;
 
-  const level = Math.floor((wallet.total_earned || 0) / 100) + 1;
-
   return (
     <TooltipProvider>
-      <div className="flex items-center gap-2">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              className="bg-gradient-to-r from-primary/20 to-secondary/20 border-primary/20 animate-glow"
-            >
-              <div className="flex items-center gap-2">
-                <Coins className="h-4 w-4 text-primary animate-pulse" />
-                <span className="font-medium">{wallet.balance}</span>
-              </div>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Your voting power</p>
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              className="bg-gradient-to-r from-primary/20 to-secondary/20 border-primary/20"
-            >
-              <div className="flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-yellow-500" />
-                <span className="font-medium">Level {level}</span>
-              </div>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Your current level</p>
-          </TooltipContent>
-        </Tooltip>
-
-        {streak && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                className="bg-gradient-to-r from-primary/20 to-secondary/20 border-primary/20"
-              >
-                <div className="flex items-center gap-2">
-                  <Flame className="h-4 w-4 text-orange-500" />
-                  <span className="font-medium">{streak.current_streak} days</span>
-                </div>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Current streak (Best: {streak.longest_streak} days)</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="bg-[#2b2d31] hover:bg-[#2b2d31]/80"
+          >
+            <Diamond className="h-4 w-4 text-blue-400 mr-2" />
+            <span className="font-medium text-white">{wallet.balance}</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Your token balance</p>
+        </TooltipContent>
+      </Tooltip>
     </TooltipProvider>
   );
 };
