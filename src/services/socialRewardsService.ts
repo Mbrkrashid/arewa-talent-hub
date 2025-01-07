@@ -41,7 +41,7 @@ export const socialRewardsService = {
 
       if (trackingError) throw trackingError;
 
-      // Award tokens using rpc instead of sql
+      // Award tokens using rpc function
       const { error: tokenError } = await supabase.rpc('increment_token_balance', {
         user_id: user.id,
         amount: rewardConfig.reward_amount
