@@ -2,17 +2,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInView } from "react-intersection-observer";
-
-interface Video {
-  id: string;
-  title: string;
-  thumbnail_url: string;
-  likes_count: number;
-  vendor_id: string;
-  vendors: {
-    business_name: string;
-  };
-}
+import type { Video } from "@/services/videoService";
 
 export const VideoFeed = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -43,8 +33,12 @@ export const VideoFeed = () => {
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        setVideos(data);
-        console.log("Fetched videos:", data);
+        const transformedVideos = data.map(video => ({
+          ...video,
+          vendors: video.vendors?.[0] || { business_name: "Anonymous" }
+        })) as Video[];
+        
+        setVideos(transformedVideos);
       }
     };
 

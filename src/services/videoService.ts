@@ -10,6 +10,8 @@ export interface Video {
     business_name: string;
   } | null;
   level?: number;
+  views_count?: number;
+  category_id?: string;
 }
 
 export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any }> => {
@@ -28,8 +30,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
           business_name
         )
       `)
-      .order('created_at', { ascending: false })
-      .limit(10);
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching videos:', error);

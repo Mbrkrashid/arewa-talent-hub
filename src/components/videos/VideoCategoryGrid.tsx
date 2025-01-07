@@ -3,17 +3,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mic, Music2, Laugh } from "lucide-react";
+import type { Video } from "@/services/videoService";
 
-interface Video {
+interface Category {
   id: string;
-  title: string;
-  thumbnail_url: string;
-  likes_count: number;
-  views_count: number;
-  category_id: string;
-  vendors: {
-    business_name: string;
-  };
+  label: string;
+  icon: any;
 }
 
 const categories = [
@@ -43,14 +38,18 @@ export const VideoCategoryGrid = () => {
         .order('views_count', { ascending: false });
 
       if (!error && data) {
-        const grouped = data.reduce((acc, video) => {
+        const transformedData = data.map(video => ({
+          ...video,
+          vendors: video.vendors?.[0] || { business_name: "Anonymous" }
+        })) as Video[];
+
+        const grouped = transformedData.reduce((acc, video) => {
           const category = video.category_id || 'uncategorized';
           acc[category] = [...(acc[category] || []), video];
           return acc;
         }, {} as Record<string, Video[]>);
         
         setVideosByCategory(grouped);
-        console.log("Fetched videos by category:", grouped);
       }
     };
 
