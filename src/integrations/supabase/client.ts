@@ -12,11 +12,6 @@ export const supabase = createClient<Database>(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: true
-    },
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'apikey': SUPABASE_PUBLISHABLE_KEY
     }
   }
 );

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
+import { Database } from "@/types/supabase";
 
 type TokenWallet = Database['public']['Tables']['token_wallets']['Row'];
 
@@ -20,13 +20,13 @@ export const TokenBalance = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: walletData } = await supabase
+      const { data: walletData, error } = await supabase
         .from('token_wallets')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (walletData) {
+      if (!error && walletData) {
         setWallet(walletData);
         console.log("Wallet data:", walletData);
       }
