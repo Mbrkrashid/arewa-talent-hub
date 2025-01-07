@@ -47,11 +47,11 @@ export const TokenBalance = () => {
             className="bg-[#2b2d31] hover:bg-[#2b2d31]/80"
           >
             <Diamond className="h-4 w-4 text-blue-400 mr-2" />
-            <span className="font-medium text-white">{wallet.balance}</span>
+            <span className="font-medium text-white">{wallet.balance} eNaira</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Your token balance</p>
+          <p>Your eNaira balance</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -5,8 +5,10 @@ import { AnimatedHeader } from "@/components/layout/AnimatedHeader";
 import { ActionButtons } from "@/components/actions/ActionButtons";
 import { ContentSection } from "@/components/content/ContentSection";
 import { ParticipantLevel } from "@/components/ParticipantLevel";
-import { Mic, Music2, Sparkles, Trophy, Star } from "lucide-react";
+import { Mic, Music2, Sparkles, Trophy, Star, Share2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { socialRewardsService } from "@/services/socialRewardsService";
+import { useToast } from "@/hooks/use-toast";
 
 interface MainContentProps {
   videos: any[];
@@ -19,6 +21,7 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
   const [participantLevel, setParticipantLevel] = useState(1);
   const [totalVotes, setTotalVotes] = useState(0);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -47,6 +50,20 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
     checkUserStatus();
   }, []);
 
+  const handleSocialShare = async (platform: string) => {
+    try {
+      const earnedTokens = await socialRewardsService.trackSocialEngagement(platform);
+      if (earnedTokens) {
+        toast({
+          title: "Tokens Earned!",
+          description: `You earned ${earnedTokens} eNaira tokens for sharing on ${platform}!`,
+        });
+      }
+    } catch (error) {
+      console.error('Error handling social share:', error);
+    }
+  };
+
   if (isAdmin) {
     return <AdminDashboard />;
   }
@@ -68,27 +85,31 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
                 Welcome to Arewa Talent Hub
               </h1>
               <p className="text-lg text-gray-300">
-                Discover amazing talents and vote for your favorites
+                Share your talent and earn eNaira tokens
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all">
-              <Trophy className="h-8 w-8 text-primary mb-2 mx-auto group-hover:animate-bounce" />
-              <p className="text-white text-center text-sm">Top Talents</p>
+            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all cursor-pointer"
+                 onClick={() => handleSocialShare('youtube')}>
+              <Trophy className="h-8 w-8 text-red-500 mb-2 mx-auto group-hover:animate-bounce" />
+              <p className="text-white text-center text-sm">YouTube</p>
             </div>
-            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all">
-              <Star className="h-8 w-8 text-yellow-500 mb-2 mx-auto group-hover:animate-pulse" />
-              <p className="text-white text-center text-sm">Featured Artists</p>
+            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all cursor-pointer"
+                 onClick={() => handleSocialShare('tiktok')}>
+              <Star className="h-8 w-8 text-pink-500 mb-2 mx-auto group-hover:animate-pulse" />
+              <p className="text-white text-center text-sm">TikTok</p>
             </div>
-            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all">
-              <Mic className="h-8 w-8 text-secondary mb-2 mx-auto group-hover:animate-dance" />
-              <p className="text-white text-center text-sm">Live Shows</p>
+            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all cursor-pointer"
+                 onClick={() => handleSocialShare('facebook')}>
+              <Share2 className="h-8 w-8 text-blue-500 mb-2 mx-auto group-hover:animate-dance" />
+              <p className="text-white text-center text-sm">Facebook</p>
             </div>
-            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all">
-              <Music2 className="h-8 w-8 text-accent mb-2 mx-auto group-hover:animate-float" />
-              <p className="text-white text-center text-sm">Trending</p>
+            <div className="bg-black/30 p-4 rounded-lg backdrop-blur-sm group hover:bg-black/40 transition-all cursor-pointer"
+                 onClick={() => handleSocialShare('instagram')}>
+              <Music2 className="h-8 w-8 text-purple-500 mb-2 mx-auto group-hover:animate-float" />
+              <p className="text-white text-center text-sm">Instagram</p>
             </div>
           </div>
         </div>
