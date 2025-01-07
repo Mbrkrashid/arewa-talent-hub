@@ -25,10 +25,26 @@ export const VideoUpload = () => {
         return;
       }
 
+      // Get user profile to check role
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile || profile.role !== 'participant') {
+        toast({
+          title: "Access denied",
+          description: "Only participants can upload videos",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Upload to Supabase storage
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError, data: storageData } = await supabase.storage
         .from('videos')
         .upload(fileName, file);
 
@@ -46,7 +62,8 @@ export const VideoUpload = () => {
           vendor_id: user.id,
           title: file.name.split('.')[0],
           video_url: publicUrl,
-          description: "My talent showcase"
+          description: "My talent showcase",
+          thumbnail_url: publicUrl // You might want to generate a proper thumbnail
         });
 
       if (dbError) throw dbError;
@@ -55,6 +72,9 @@ export const VideoUpload = () => {
         title: "Success!",
         description: "Your video has been uploaded",
       });
+
+      // Refresh the page to show the new video
+      window.location.reload();
     } catch (error) {
       console.error('Error uploading video:', error);
       toast({

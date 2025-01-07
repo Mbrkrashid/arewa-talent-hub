@@ -5,6 +5,7 @@ import { AnimatedHeader } from "@/components/layout/AnimatedHeader";
 import { ActionButtons } from "@/components/actions/ActionButtons";
 import { ContentSection } from "@/components/content/ContentSection";
 import { ParticipantLevel } from "@/components/ParticipantLevel";
+import { VideoUpload } from "@/components/VideoUpload";
 import { Mic, Music2, Sparkles, Trophy, Star, Share2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { socialRewardsService } from "@/services/socialRewardsService";
@@ -114,6 +115,8 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
           </div>
         </div>
       </div>
+
+      {userRole === 'participant' && <VideoUpload />}
 
       <ActionButtons />
 
