@@ -17,18 +17,27 @@ export const TokenBalance = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-      const { data: walletData, error } = await supabase
-        .from('token_wallets')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
+        const { data: walletData, error } = await supabase
+          .from('token_wallets')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      if (!error && walletData) {
-        setWallet(walletData);
-        console.log("Wallet data:", walletData);
+        if (error) {
+          console.error('Error fetching wallet:', error);
+          return;
+        }
+
+        if (walletData) {
+          setWallet(walletData);
+          console.log("Wallet data:", walletData);
+        }
+      } catch (error) {
+        console.error('Error in fetchData:', error);
       }
     };
 
