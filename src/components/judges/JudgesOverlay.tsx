@@ -3,18 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, MessageCircle } from "lucide-react";
-
-interface Judge {
-  id: string;
-  profile_id: string;
-  expertise: string;
-  bio: string;
-  status: 'online' | 'offline';
-  profiles: {
-    avatar_url: string;
-    username: string;
-  };
-}
+import { Judge } from "./types";
 
 export const JudgesOverlay = ({ videoId }: { videoId: string }) => {
   const [judges, setJudges] = useState<Judge[]>([]);
@@ -38,12 +27,12 @@ export const JudgesOverlay = ({ videoId }: { videoId: string }) => {
         .limit(3);
 
       if (data) {
-        // Convert status to correct type
-        const typedData = data.map(judge => ({
+        const transformedData = data.map(judge => ({
           ...judge,
-          status: judge.status === 'online' ? 'online' : 'offline'
+          status: judge.status === 'online' ? 'online' : 'offline',
+          profiles: judge.profiles?.[0] || null
         })) as Judge[];
-        setJudges(typedData);
+        setJudges(transformedData);
       }
     };
 
@@ -80,7 +69,7 @@ export const JudgesOverlay = ({ videoId }: { videoId: string }) => {
           <div className="flex items-center gap-3">
             <div className="relative">
               <Avatar className="h-12 w-12 ring-2 ring-primary/20">
-                <AvatarImage src={judge.profiles?.avatar_url} />
+                <AvatarImage src={judge.profiles?.avatar_url || undefined} />
                 <AvatarFallback>{judge.profiles?.username?.[0]}</AvatarFallback>
               </Avatar>
               <div 

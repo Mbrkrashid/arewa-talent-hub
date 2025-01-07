@@ -2,18 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Judge {
-  id: string;
-  profile_id: string;
-  expertise: string;
-  bio: string;
-  status: 'online' | 'offline';
-  profiles: {
-    avatar_url: string;
-    username: string;
-  };
-}
+import { Judge } from "./types";
 
 export const JudgesPanel = () => {
   const [judges, setJudges] = useState<Judge[]>([]);
@@ -36,10 +25,10 @@ export const JudgesPanel = () => {
         .limit(3);
 
       if (!error && data) {
-        // Transform the data to ensure status is either 'online' or 'offline'
         const transformedData = data.map(judge => ({
           ...judge,
-          status: judge.status === 'online' ? 'online' : 'offline'
+          status: judge.status === 'online' ? 'online' : 'offline',
+          profiles: judge.profiles?.[0] || null
         })) as Judge[];
         
         setJudges(transformedData);
@@ -57,7 +46,7 @@ export const JudgesPanel = () => {
           <div className="flex items-center gap-4">
             <div className="relative">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={judge.profiles?.avatar_url} />
+                <AvatarImage src={judge.profiles?.avatar_url || undefined} />
                 <AvatarFallback>{judge.profiles?.username?.[0]}</AvatarFallback>
               </Avatar>
               <div className={`absolute -bottom-1 -right-1 h-3 w-3 rounded-full ${

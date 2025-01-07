@@ -6,9 +6,9 @@ export interface Video {
   thumbnail_url: string | null;
   likes_count: number;
   vendor_id: string;
-  vendors?: {
+  vendors: {
     business_name: string;
-  };
+  } | null;
   level?: number;
 }
 
@@ -41,8 +41,8 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
     const videosWithLevel = data?.map(video => ({
       ...video,
       level: Math.floor((video.likes_count || 0) / 100) + 1,
-      vendors: video.vendors || { business_name: "Anonymous" }
-    })) || [];
+      vendors: video.vendors?.[0] || { business_name: "Anonymous" }
+    })) as Video[];
 
     return { data: videosWithLevel, error: null };
   } catch (error) {
