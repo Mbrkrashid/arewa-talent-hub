@@ -249,6 +249,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_social_rewards: {
+        Row: {
+          id: string
+          last_rewarded_at: string | null
+          platform: string
+          rewards_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          last_rewarded_at?: string | null
+          platform: string
+          rewards_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          last_rewarded_at?: string | null
+          platform?: string
+          rewards_count?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       hashtag_challenges: {
         Row: {
           created_at: string | null
@@ -692,6 +716,30 @@ export type Database = {
           platform_user_id?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      social_media_rewards: {
+        Row: {
+          created_at: string | null
+          daily_limit: number
+          id: string
+          platform: string
+          reward_amount: number
+        }
+        Insert: {
+          created_at?: string | null
+          daily_limit?: number
+          id?: string
+          platform: string
+          reward_amount?: number
+        }
+        Update: {
+          created_at?: string | null
+          daily_limit?: number
+          id?: string
+          platform?: string
+          reward_amount?: number
         }
         Relationships: []
       }
