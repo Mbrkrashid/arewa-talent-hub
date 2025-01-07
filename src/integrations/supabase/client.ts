@@ -15,11 +15,6 @@ export const supabase = createClient<Database>(
     },
     db: {
       schema: 'public'
-    },
-    global: {
-      headers: {
-        'x-my-custom-header': 'public'
-      }
     }
   }
 );

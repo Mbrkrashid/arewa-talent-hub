@@ -41,11 +41,14 @@ export const socialRewardsService = {
 
       if (trackingError) throw trackingError;
 
-      // Award tokens using rpc function
-      const { error: tokenError } = await supabase.rpc('increment_token_balance', {
-        user_id: user.id,
-        amount: rewardConfig.reward_amount
-      });
+      // Update token balance directly
+      const { error: tokenError } = await supabase
+        .from('token_wallets')
+        .update({ 
+          balance: supabase.sql`balance + ${rewardConfig.reward_amount}`,
+          total_earned: supabase.sql`total_earned + ${rewardConfig.reward_amount}`
+        })
+        .eq('user_id', user.id);
 
       if (tokenError) throw tokenError;
 
