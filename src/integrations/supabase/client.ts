@@ -13,14 +13,10 @@ export const supabase = createClient<Database>(
       persistSession: true,
       detectSessionInUrl: true
     },
-    db: {
-      schema: 'public'
-    },
-    global: {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': '*/*'
-      }
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_PUBLISHABLE_KEY
     }
   }
 );
