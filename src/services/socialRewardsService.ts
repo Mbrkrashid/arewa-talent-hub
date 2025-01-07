@@ -41,12 +41,21 @@ export const socialRewardsService = {
 
       if (trackingError) throw trackingError;
 
-      // Update token balance directly
+      // First get current wallet values
+      const { data: currentWallet } = await supabase
+        .from('token_wallets')
+        .select('balance, total_earned')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!currentWallet) throw new Error('Wallet not found');
+
+      // Update token balance with calculated values
       const { error: tokenError } = await supabase
         .from('token_wallets')
         .update({ 
-          balance: supabase.sql`balance + ${rewardConfig.reward_amount}`,
-          total_earned: supabase.sql`total_earned + ${rewardConfig.reward_amount}`
+          balance: currentWallet.balance + rewardConfig.reward_amount,
+          total_earned: currentWallet.total_earned + rewardConfig.reward_amount
         })
         .eq('user_id', user.id);
 
