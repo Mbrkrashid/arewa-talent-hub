@@ -41,7 +41,7 @@ export const fetchVideos = async (retryCount = 0): Promise<{ data: Video[] | nul
       console.error('Error fetching videos:', error);
       
       // Retry logic for specific errors
-      if (retryCount < MAX_RETRIES && (error.status === 406 || error.message.includes('Failed to fetch'))) {
+      if (retryCount < MAX_RETRIES && (error.code === 'PGRST106' || error.message?.includes('Failed to fetch'))) {
         console.log(`Retrying fetch attempt ${retryCount + 1} of ${MAX_RETRIES}...`);
         await sleep(RETRY_DELAY);
         return fetchVideos(retryCount + 1);
