@@ -84,6 +84,7 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
             <div className="absolute bottom-20 right-4 flex flex-col items-center gap-6">
               <VideoControls isMuted={isMuted} onToggleMute={toggleMute} />
               <VideoActions 
+                videoId={video.id}
                 likesCount={video.likes_count || 0}
                 sharesCount={video.shares_count || 0}
               />

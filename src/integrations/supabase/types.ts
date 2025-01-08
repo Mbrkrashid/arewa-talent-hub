@@ -133,6 +133,39 @@ export type Database = {
         }
         Relationships: []
       }
+      background_music: {
+        Row: {
+          artist: string | null
+          audio_url: string
+          category: string | null
+          created_at: string | null
+          duration: number | null
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          artist?: string | null
+          audio_url: string
+          category?: string | null
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          artist?: string | null
+          audio_url?: string
+          category?: string | null
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       brand_campaigns: {
         Row: {
           ad_placement: string | null
