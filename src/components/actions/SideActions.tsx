@@ -1,11 +1,11 @@
 import { Heart, MessageCircle, Share2, Music2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Toast } from "@/components/ui/toast";
+import { ToastProps } from "@/components/ui/toast";
 
 interface SideActionsProps {
   videos: any[];
-  toast: Toast;
+  toast: (props: ToastProps) => void;
 }
 
 export const SideActions = ({ videos, toast }: SideActionsProps) => {
