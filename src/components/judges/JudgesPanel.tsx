@@ -32,13 +32,15 @@ export const JudgesPanel = () => {
         }
 
         console.log('Fetched judges:', data);
-        const transformedData = data?.map(judge => ({
-          ...judge,
-          status: judge.status === 'online' ? 'online' : 'offline',
-          profiles: judge.profiles || null
-        })) as Judge[];
-        
-        setJudges(transformedData);
+        if (data) {
+          const transformedData: Judge[] = data.map(judge => ({
+            ...judge,
+            status: judge.status === 'online' ? 'online' : 'offline',
+            profiles: judge.profiles || null
+          }));
+          
+          setJudges(transformedData);
+        }
       } catch (error) {
         console.error('Error in fetchJudges:', error);
       }
