@@ -51,19 +51,40 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
   }, []);
 
   return (
-    <div className="relative h-[calc(100vh-4rem)] w-full max-w-3xl mx-auto bg-black/20">
-      <div className="safe-top">
-        <TopActions userRole={userRole} />
-        <PrizeDisplay />
-      </div>
-      <div className="h-full overflow-hidden">
-        <VideoTabs videos={videos} loading={loading} />
-      </div>
-      <div className="safe-bottom">
-        <SideActions videos={videos} toast={toast} />
-        <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
-        <SocialMediaConnections />
-        <BottomNav />
+    <div className="fixed inset-0 bg-black">
+      {/* Main video container */}
+      <div className="relative h-full w-full">
+        {/* Video feed */}
+        <div className="h-full">
+          <VideoTabs videos={videos} loading={loading} />
+        </div>
+
+        {/* Overlay elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Top section */}
+          <div className="absolute top-0 left-0 right-0 z-50 p-4">
+            <TopActions userRole={userRole} />
+          </div>
+
+          {/* Right side actions */}
+          <div className="absolute right-4 bottom-20 z-50 pointer-events-auto">
+            <SideActions videos={videos} toast={toast} />
+          </div>
+
+          {/* Bottom section */}
+          <div className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto">
+            <div className="p-4 space-y-4">
+              <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
+              <SocialMediaConnections />
+              <BottomNav />
+            </div>
+          </div>
+
+          {/* Prize display */}
+          <div className="absolute top-16 left-0 right-0 z-40">
+            <PrizeDisplay />
+          </div>
+        </div>
       </div>
     </div>
   );
