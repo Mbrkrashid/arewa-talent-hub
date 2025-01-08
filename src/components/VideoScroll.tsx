@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import type { Video } from "@/services/videoService";
-import { VideoControls } from "@/components/videos/VideoControls";
-import { VideoActions } from "@/components/videos/VideoActions";
-import { VideoInfo } from "@/components/videos/VideoInfo";
+import { VideoPlayer } from "./videos/VideoPlayer";
+import { VideoOverlay } from "./videos/VideoOverlay";
 
 interface VideoScrollProps {
   videos: Video[];
@@ -14,16 +13,6 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
-
-  useEffect(() => {
-    Object.entries(videoRefs.current).forEach(([id, video]) => {
-      if (id === videos[currentIndex]?.id) {
-        video.play().catch(console.error);
-      } else {
-        video.pause();
-      }
-    });
-  }, [currentIndex, videos]);
 
   if (loading) {
     return (
@@ -67,33 +56,17 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
             ref={ref}
             className="h-full w-full snap-start relative"
           >
-            <video
-              ref={el => el && (videoRefs.current[video.id] = el)}
-              src={video.video_url}
-              className="h-full w-full object-cover"
-              loop
-              playsInline
-              autoPlay={inView}
-              muted={isMuted}
+            <VideoPlayer
+              videoUrl={video.video_url}
+              isPlaying={inView}
+              isMuted={isMuted}
+              onVideoRef={el => el && (videoRefs.current[video.id] = el)}
             />
             
-            {/* Video overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
-            
-            {/* Video controls */}
-            <div className="absolute bottom-20 right-4 flex flex-col items-center gap-6">
-              <VideoControls isMuted={isMuted} onToggleMute={toggleMute} />
-              <VideoActions 
-                videoId={video.id}
-                likesCount={video.likes_count || 0}
-                sharesCount={video.shares_count || 0}
-              />
-            </div>
-
-            <VideoInfo 
-              title={video.title}
-              artist={video.vendor?.business_name || "Anonymous"}
-              description={video.description}
+            <VideoOverlay
+              video={video}
+              isMuted={isMuted}
+              onToggleMute={toggleMute}
             />
           </div>
         );
