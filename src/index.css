@@ -58,66 +58,65 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
-  /* Mobile-specific optimizations */
   html {
     -webkit-tap-highlight-color: transparent;
     @apply touch-manipulation;
   }
   
-  /* Prevent pull-to-refresh */
   body {
     overscroll-behavior-y: contain;
     @apply overflow-x-hidden;
   }
   
-  /* Better touch targets */
   button, a, input, select, textarea {
     @apply min-h-[44px] min-w-[44px];
   }
   
-  /* Responsive text sizing */
   h1 { @apply text-2xl md:text-3xl lg:text-4xl font-bold; }
   h2 { @apply text-xl md:text-2xl lg:text-3xl font-semibold; }
   h3 { @apply text-lg md:text-xl lg:text-2xl font-semibold; }
   p { @apply text-sm md:text-base; }
-  
-  /* Smooth scrolling */
-  .smooth-scroll {
-    @apply scroll-smooth;
-  }
-  
-  /* Hide scrollbars but keep functionality */
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Safe areas for notched devices */
-  .safe-top {
-    padding-top: env(safe-area-inset-top);
-  }
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
 }
 
-/* Responsive container queries */
 @layer components {
   .container {
     @apply px-4 mx-auto w-full max-w-7xl;
-    @screen sm { @apply px-6; }
-    @screen lg { @apply px-8; }
+  }
+  
+  .container-sm {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-lg {
+    @apply px-4 sm:px-6 lg:px-8;
   }
   
   .mobile-container {
     @apply max-w-[480px] mx-auto px-4;
   }
+  
+  .safe-top {
+    @apply pt-[env(safe-area-inset-top)];
+  }
+  
+  .safe-bottom {
+    @apply pb-[env(safe-area-inset-bottom)];
+  }
+  
+  .smooth-scroll {
+    @apply scroll-smooth;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-/* Mobile-first media queries */
 @layer utilities {
   .desktop-only {
     @apply hidden lg:block;

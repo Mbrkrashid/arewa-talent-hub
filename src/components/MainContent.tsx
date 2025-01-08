@@ -49,12 +49,16 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
 
   return (
     <div className="relative h-[calc(100vh-4rem)] w-full max-w-3xl mx-auto bg-black/20">
-      <TopActions userRole={userRole} />
+      <div className="safe-top">
+        <TopActions userRole={userRole} />
+      </div>
       <div className="h-full overflow-hidden">
         <VideoTabs videos={videos} loading={loading} />
       </div>
-      <SideActions videos={videos} toast={toast} />
-      <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
+      <div className="safe-bottom">
+        <SideActions videos={videos} toast={toast} />
+        <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
+      </div>
     </div>
   );
 };
