@@ -25,7 +25,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
   try {
     const { data, error } = await supabase
       .from('video_content')
-      .select('*, vendors(business_name)')
+      .select('*, vendors!inner(business_name)')
       .order('created_at', { ascending: false });
 
     if (error) {
