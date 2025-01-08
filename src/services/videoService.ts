@@ -24,24 +24,12 @@ export const fetchVideos = async () => {
     const { data, error } = await supabase
       .from('video_content')
       .select(`
-        id,
-        title,
-        description,
-        video_url,
-        thumbnail_url,
-        vendor_id,
-        likes_count,
-        views_count,
-        shares_count,
-        created_at,
-        updated_at,
-        category_id,
+        *,
         vendors (
           business_name
         )
       `)
-      .order('created_at', { ascending: false })
-      .throwOnError();
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching videos:', error);
