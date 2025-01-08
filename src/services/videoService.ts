@@ -19,13 +19,15 @@ export type Video = {
 };
 
 export const fetchVideos = async () => {
-  console.log("Fetching videos from Supabase...");
+  console.log('Fetching videos from Supabase...');
   try {
     const { data, error } = await supabase
       .from('video_content')
       .select(`
         *,
-        vendor:vendors(business_name)
+        vendor:vendors!video_content_vendor_id_fkey (
+          business_name
+        )
       `)
       .order('created_at', { ascending: false });
 
@@ -37,7 +39,7 @@ export const fetchVideos = async () => {
     // Transform the data to match the Video type
     const transformedData = data?.map(video => ({
       ...video,
-      vendor: video.vendor?.[0] || null
+      vendor: video.vendor || null
     })) as Video[];
 
     console.log("Successfully fetched videos:", transformedData);
