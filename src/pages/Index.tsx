@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { MainContent } from "@/components/MainContent";
+import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
 import { Session } from "@supabase/supabase-js";
 import type { Video } from "@/services/videoService";
 
@@ -11,6 +12,7 @@ const Index = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("Setting up auth state change listener");
@@ -25,10 +27,53 @@ const Index = () => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
       setSession(session);
+      
+      if (event === 'SIGNED_IN') {
+        toast({
+          title: "Welcome to Arewa Talent Hub! 🎉",
+          description: "You've successfully signed in",
+        });
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [toast]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('video_content')
+          .select(`
+            *,
+            vendors (
+              business_name
+            )
+          `)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        console.log("Fetched videos:", data);
+        setVideos(data || []);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load videos",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, [toast]);
+
+  if (!session) {
+    return <RoleAuthUI authError={authError} />;
+  }
 
   return (
     <div className="h-screen overflow-hidden bg-black">
