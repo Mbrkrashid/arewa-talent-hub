@@ -35,10 +35,12 @@ const App = () => {
   }, [toast]);
 
   return (
-    <div className="bg-black min-h-screen text-white w-full max-w-[480px] mx-auto relative overflow-hidden">
-      <Routes>
-        <Route path="/" element={<Index />} />
-      </Routes>
+    <div className="min-h-screen min-w-screen bg-black text-white overflow-hidden">
+      <div className="mx-auto h-full w-full max-w-[480px] lg:max-w-none relative">
+        <Routes>
+          <Route path="/" element={<Index />} />
+        </Routes>
+      </div>
     </div>
   );
 };
