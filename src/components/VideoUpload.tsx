@@ -72,11 +72,7 @@ export const VideoUpload = () => {
         .from('videos')
         .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            const percent = (progress.loaded / progress.total) * 100;
-            setProgress(percent);
-          },
+          upsert: false
         });
 
       if (uploadError) throw uploadError;
