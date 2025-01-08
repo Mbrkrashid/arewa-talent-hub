@@ -13,7 +13,7 @@ export interface Video {
   created_at: string;
   updated_at: string;
   category_id: string | null;
-  vendor: {
+  vendor?: {
     business_name: string;
   } | null;
 }
@@ -23,7 +23,12 @@ export const fetchVideos = async () => {
   try {
     const { data, error } = await supabase
       .from('video_content')
-      .select('*, vendor:vendors(business_name)')
+      .select(`
+        *,
+        vendor:vendors!video_content_vendor_id_fkey (
+          business_name
+        )
+      `)
       .order('created_at', { ascending: false });
 
     if (error) {
