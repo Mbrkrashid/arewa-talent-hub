@@ -37,9 +37,9 @@ export const fetchVideos = async () => {
     }
 
     console.log("Successfully fetched videos:", data);
-    return { data, error: null };
+    return { data: data as Video[], error: null };
   } catch (error) {
-    console.error('Error fetching videos:', error);
+    console.error('Error in fetchVideos:', error);
     return { data: null, error };
   }
 };
