@@ -57,7 +57,7 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
             />
             <div className="absolute bottom-0 left-0 p-4 text-white">
               <h3 className="text-lg font-semibold">{video.title}</h3>
-              <p className="text-sm text-white/80">@{video.vendors?.business_name || "Anonymous"}</p>
+              <p className="text-sm text-white/80">@{video.vendor?.business_name || "Anonymous"}</p>
             </div>
           </div>
         );

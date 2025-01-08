@@ -27,13 +27,8 @@ export const VideoCategoryGrid = () => {
         const { data, error } = await supabase
           .from('video_content')
           .select(`
-            id,
-            title,
-            thumbnail_url,
-            likes_count,
-            views_count,
-            category_id,
-            vendors!inner (
+            *,
+            vendor:vendors (
               business_name
             )
           `)
@@ -45,12 +40,8 @@ export const VideoCategoryGrid = () => {
         }
 
         console.log('Fetched category videos:', data);
-        const transformedData = data?.map(video => ({
-          ...video,
-          vendors: video.vendors || { business_name: "Anonymous" }
-        })) as Video[];
 
-        const grouped = transformedData.reduce((acc, video) => {
+        const grouped = (data as Video[]).reduce((acc, video) => {
           const category = video.category_id || 'uncategorized';
           acc[category] = [...(acc[category] || []), video];
           return acc;
@@ -92,8 +83,8 @@ export const VideoCategoryGrid = () => {
                   key={video.id}
                   id={video.id}
                   title={video.title}
-                  artist={video.vendors?.business_name || "Anonymous"}
-                  votes={video.likes_count}
+                  artist={video.vendor?.business_name || "Anonymous"}
+                  votes={video.likes_count || 0}
                   thumbnailUrl={video.thumbnail_url || "/placeholder.svg"}
                   level={Math.floor((video.likes_count || 0) / 100) + 1}
                 />

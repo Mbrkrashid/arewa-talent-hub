@@ -36,10 +36,10 @@ export const VideoGrid = ({ videos, loading, viewMode = "scroll" }: VideoGridPro
           key={video.id}
           id={video.id}
           title={video.title}
-          artist={video.vendors?.business_name || "Anonymous"}
-          votes={video.likes_count}
+          artist={video.vendor?.business_name || "Anonymous"}
+          votes={video.likes_count || 0}
           thumbnailUrl={video.thumbnail_url || "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500"}
-          level={video.level || 1}
+          level={Math.floor((video.likes_count || 0) / 100) + 1}
         />
       ))}
     </div>

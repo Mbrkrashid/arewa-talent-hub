@@ -23,12 +23,8 @@ export const VideoFeed = () => {
         const { data, error } = await supabase
           .from('video_content')
           .select(`
-            id,
-            title,
-            thumbnail_url,
-            likes_count,
-            vendor_id,
-            vendors:vendors (
+            *,
+            vendor:vendors (
               business_name
             )
           `)
@@ -40,13 +36,7 @@ export const VideoFeed = () => {
         }
 
         console.log('Successfully fetched videos:', data);
-        const transformedVideos = data?.map(video => ({
-          ...video,
-          level: Math.floor((video.likes_count || 0) / 100) + 1,
-          vendors: video.vendors || { business_name: "Anonymous" }
-        })) as Video[];
-        
-        setVideos(transformedVideos);
+        setVideos(data as Video[]);
       } catch (error) {
         console.error('Unexpected error in fetchVideos:', error);
       }
@@ -67,8 +57,8 @@ export const VideoFeed = () => {
             <VideoCard
               id={video.id}
               title={video.title}
-              artist={video.vendors?.business_name || "Anonymous"}
-              votes={video.likes_count}
+              artist={video.vendor?.business_name || "Anonymous"}
+              votes={video.likes_count || 0}
               thumbnailUrl={video.thumbnail_url || "/placeholder.svg"}
               level={Math.floor((video.likes_count || 0) / 100) + 1}
             />
