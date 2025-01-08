@@ -43,17 +43,33 @@ const Index = () => {
     const fetchVideos = async () => {
       try {
         setLoading(true);
+        console.log("Fetching videos from database...");
+        
         const { data, error } = await supabase
           .from('video_content')
           .select(`
-            *,
-            vendors (
+            id,
+            title,
+            description,
+            video_url,
+            thumbnail_url,
+            views_count,
+            likes_count,
+            shares_count,
+            created_at,
+            updated_at,
+            vendor_id,
+            vendors:vendor_id (
               business_name
             )
           `)
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
+        
         console.log("Fetched videos:", data);
         setVideos(data || []);
       } catch (error) {
