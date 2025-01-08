@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export interface Video {
   id: string;
@@ -23,6 +24,11 @@ const RETRY_DELAY = 1000; // 1 second
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const shouldRetry = (error: PostgrestError | null) => {
+  if (!error) return false;
+  return error.code === 'PGRST106' || (error as any).status === 406;
+};
+
 export const fetchVideos = async (retryCount = 0): Promise<{ data: Video[] | null; error: any }> => {
   console.log('Fetching videos from Supabase...', { attempt: retryCount + 1 });
   
@@ -31,7 +37,7 @@ export const fetchVideos = async (retryCount = 0): Promise<{ data: Video[] | nul
       .from('video_content')
       .select(`
         *,
-        vendor:vendors!video_content_vendor_id_fkey (
+        vendor:vendors (
           business_name
         )
       `)
@@ -40,8 +46,8 @@ export const fetchVideos = async (retryCount = 0): Promise<{ data: Video[] | nul
     if (error) {
       console.error('Error fetching videos:', error);
       
-      // Retry logic for specific errors
-      if (retryCount < MAX_RETRIES && (error.code === 'PGRST106' || error.status === 406)) {
+      // Retry logic with improved error handling
+      if (retryCount < MAX_RETRIES && shouldRetry(error)) {
         console.log(`Retrying fetch attempt ${retryCount + 1} of ${MAX_RETRIES}...`);
         await sleep(RETRY_DELAY);
         return fetchVideos(retryCount + 1);
