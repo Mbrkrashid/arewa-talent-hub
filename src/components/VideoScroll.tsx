@@ -1,7 +1,8 @@
-import { VideoCard } from "@/components/VideoCard";
-import { useEffect, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import type { Video } from "@/services/videoService";
+import { Volume2, VolumeX } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface VideoScrollProps {
   videos: Video[];
@@ -10,6 +11,19 @@ interface VideoScrollProps {
 
 export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
+
+  useEffect(() => {
+    // Pause all videos except the current one
+    Object.entries(videoRefs.current).forEach(([id, video]) => {
+      if (id === videos[currentIndex]?.id) {
+        video.play().catch(console.error);
+      } else {
+        video.pause();
+      }
+    });
+  }, [currentIndex, videos]);
 
   if (loading) {
     return (
@@ -26,6 +40,13 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
       </div>
     );
   }
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    Object.values(videoRefs.current).forEach(video => {
+      video.muted = !isMuted;
+    });
+  };
 
   return (
     <div className="h-full snap-y snap-mandatory overflow-y-scroll">
@@ -46,15 +67,28 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
             ref={ref}
             className="h-full w-full snap-start relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20" />
             <video
+              ref={el => el && (videoRefs.current[video.id] = el)}
               src={video.video_url}
               className="h-full w-full object-cover"
               loop
               playsInline
               autoPlay={inView}
-              muted={!inView}
+              muted={isMuted}
             />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute bottom-20 right-4 text-white bg-black/50 rounded-full"
+              onClick={toggleMute}
+            >
+              {isMuted ? (
+                <VolumeX className="h-6 w-6" />
+              ) : (
+                <Volume2 className="h-6 w-6" />
+              )}
+            </Button>
             <div className="absolute bottom-0 left-0 p-4 text-white">
               <h3 className="text-lg font-semibold">{video.title}</h3>
               <p className="text-sm text-white/80">@{video.vendor?.business_name || "Anonymous"}</p>

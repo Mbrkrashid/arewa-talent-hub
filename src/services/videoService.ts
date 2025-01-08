@@ -1,34 +1,29 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Video = {
+export interface Video {
   id: string;
   title: string;
   description: string | null;
   video_url: string;
   thumbnail_url: string | null;
   vendor_id: string;
-  likes_count: number | null;
-  views_count: number | null;
-  shares_count: number | null;
-  created_at: string | null;
-  updated_at: string | null;
+  likes_count: number;
+  views_count: number;
+  shares_count: number;
+  created_at: string;
+  updated_at: string;
   category_id: string | null;
   vendor: {
     business_name: string;
   } | null;
-};
+}
 
 export const fetchVideos = async () => {
   console.log('Fetching videos from Supabase...');
   try {
     const { data, error } = await supabase
       .from('video_content')
-      .select(`
-        *,
-        vendor:vendors!video_content_vendor_id_fkey (
-          business_name
-        )
-      `)
+      .select('*, vendor:vendors(business_name)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -36,14 +31,8 @@ export const fetchVideos = async () => {
       throw error;
     }
 
-    // Transform the data to match the Video type
-    const transformedData = data?.map(video => ({
-      ...video,
-      vendor: video.vendor || null
-    })) as Video[];
-
-    console.log("Successfully fetched videos:", transformedData);
-    return { data: transformedData, error: null };
+    console.log("Successfully fetched videos:", data);
+    return { data: data as Video[], error: null };
   } catch (error) {
     console.error('Error in fetchVideos:', error);
     return { data: null, error };

@@ -5,6 +5,8 @@ import { SideActions } from "@/components/actions/SideActions";
 import { TopActions } from "@/components/actions/TopActions";
 import { VideoTabs } from "@/components/videos/VideoTabs";
 import { GamificationPanel } from "@/components/gamification/GamificationPanel";
+import { BottomNav } from "@/components/navigation/BottomNav";
+import { PrizeDisplay } from "@/components/prizes/PrizeDisplay";
 
 interface MainContentProps {
   videos: any[];
@@ -51,6 +53,7 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
     <div className="relative h-[calc(100vh-4rem)] w-full max-w-3xl mx-auto bg-black/20">
       <div className="safe-top">
         <TopActions userRole={userRole} />
+        <PrizeDisplay />
       </div>
       <div className="h-full overflow-hidden">
         <VideoTabs videos={videos} loading={loading} />
@@ -58,6 +61,7 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
       <div className="safe-bottom">
         <SideActions videos={videos} toast={toast} />
         <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
+        <BottomNav />
       </div>
     </div>
   );
