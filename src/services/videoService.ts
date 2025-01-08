@@ -18,11 +18,16 @@ export interface Video {
   } | null;
 }
 
-export const fetchVideos = async () => {
-  console.log('Fetching videos from Supabase...');
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const fetchVideos = async (retryCount = 0): Promise<{ data: Video[] | null; error: any }> => {
+  console.log('Fetching videos from Supabase...', { attempt: retryCount + 1 });
+  
   try {
     const { data, error } = await supabase
-      .schema('public')
       .from('video_content')
       .select(`
         *,
@@ -34,6 +39,14 @@ export const fetchVideos = async () => {
 
     if (error) {
       console.error('Error fetching videos:', error);
+      
+      // Retry logic for specific errors
+      if (retryCount < MAX_RETRIES && (error.status === 406 || error.message.includes('Failed to fetch'))) {
+        console.log(`Retrying fetch attempt ${retryCount + 1} of ${MAX_RETRIES}...`);
+        await sleep(RETRY_DELAY);
+        return fetchVideos(retryCount + 1);
+      }
+      
       throw error;
     }
 
