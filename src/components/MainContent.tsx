@@ -7,6 +7,7 @@ import { VideoTabs } from "@/components/videos/VideoTabs";
 import { GamificationPanel } from "@/components/gamification/GamificationPanel";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { PrizeDisplay } from "@/components/prizes/PrizeDisplay";
+import { SocialMediaConnections } from "@/components/social/SocialMediaConnections";
 
 interface MainContentProps {
   videos: any[];
@@ -61,6 +62,7 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
       <div className="safe-bottom">
         <SideActions videos={videos} toast={toast} />
         <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
+        <SocialMediaConnections />
         <BottomNav />
       </div>
     </div>
