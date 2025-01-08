@@ -22,10 +22,11 @@ export const fetchVideos = async () => {
   console.log('Fetching videos from Supabase...');
   try {
     const { data, error } = await supabase
+      .schema('public')
       .from('video_content')
       .select(`
         *,
-        vendors (
+        vendor:vendors (
           business_name
         )
       `)
@@ -57,8 +58,8 @@ export const fetchVideos = async () => {
       created_at: item.created_at,
       updated_at: item.updated_at,
       category_id: item.category_id,
-      vendor: item.vendors ? {
-        business_name: item.vendors.business_name
+      vendor: item.vendor ? {
+        business_name: item.vendor.business_name
       } : null
     }));
 
