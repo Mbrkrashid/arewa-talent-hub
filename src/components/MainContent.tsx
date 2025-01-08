@@ -52,38 +52,43 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
 
   return (
     <div className="fixed inset-0 bg-black">
-      {/* Main video container */}
+      {/* Main video feed container */}
       <div className="relative h-full w-full">
         {/* Video feed */}
         <div className="h-full">
           <VideoTabs videos={videos} loading={loading} />
         </div>
 
-        {/* Overlay elements */}
+        {/* Overlay elements with better organization */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Top section */}
-          <div className="absolute top-0 left-0 right-0 z-50 p-4">
+          {/* Top section - Header and navigation */}
+          <div className="absolute top-0 left-0 right-0 z-50 p-4 safe-top">
             <TopActions userRole={userRole} />
           </div>
 
-          {/* Right side actions */}
-          <div className="absolute right-4 bottom-20 z-50 pointer-events-auto">
+          {/* Right side actions - Interaction buttons */}
+          <div className="absolute right-3 bottom-24 z-50 flex flex-col items-center gap-4 pointer-events-auto">
             <SideActions videos={videos} toast={toast} />
           </div>
 
-          {/* Bottom section */}
+          {/* Bottom section - User info and navigation */}
           <div className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto">
-            <div className="p-4 space-y-4">
+            <div className="p-4 space-y-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
               <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
               <SocialMediaConnections />
-              <BottomNav />
+              <div className="h-16" /> {/* Spacer for BottomNav */}
             </div>
           </div>
 
-          {/* Prize display */}
+          {/* Prize display - Floating banner */}
           <div className="absolute top-16 left-0 right-0 z-40">
             <PrizeDisplay />
           </div>
+        </div>
+
+        {/* Fixed bottom navigation */}
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <BottomNav />
         </div>
       </div>
     </div>

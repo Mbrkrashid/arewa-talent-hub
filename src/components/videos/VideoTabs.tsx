@@ -9,16 +9,16 @@ interface VideoTabsProps {
 export const VideoTabs = ({ videos, loading }: VideoTabsProps) => {
   return (
     <Tabs defaultValue="foryou" className="h-full">
-      <TabsList className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-transparent border-none">
+      <TabsList className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-black/20 backdrop-blur-sm rounded-full border border-white/10">
         <TabsTrigger 
           value="foryou" 
-          className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-transparent"
+          className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 rounded-full px-6"
         >
           For You
         </TabsTrigger>
         <TabsTrigger 
           value="following" 
-          className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-transparent"
+          className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10 rounded-full px-6"
         >
           Following
         </TabsTrigger>
