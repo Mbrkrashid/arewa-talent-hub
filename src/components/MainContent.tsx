@@ -7,7 +7,6 @@ import { VideoTabs } from "@/components/videos/VideoTabs";
 import { GamificationPanel } from "@/components/gamification/GamificationPanel";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { PrizeDisplay } from "@/components/prizes/PrizeDisplay";
-import { SocialMediaConnections } from "@/components/social/SocialMediaConnections";
 
 interface MainContentProps {
   videos: any[];
@@ -69,7 +68,6 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
           <div className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto">
             <div className="p-4 space-y-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
               <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
-              <SocialMediaConnections />
               <div className="h-16" />
             </div>
           </div>

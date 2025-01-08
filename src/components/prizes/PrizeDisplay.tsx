@@ -11,7 +11,7 @@ export const PrizeDisplay = () => {
   return (
     <div className="absolute top-4 left-4 z-10">
       <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4 border border-white/10">
-        <h3 className="text-white font-semibold mb-4">Prize Pool</h3>
+        <h3 className="text-white font-semibold mb-4">Earn Points</h3>
         <div className="space-y-4">
           {prizes.map((prize, index) => (
             <motion.div
