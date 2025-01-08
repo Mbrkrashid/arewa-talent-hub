@@ -47,8 +47,14 @@ export const fetchVideos = async () => {
       throw error;
     }
 
-    console.log("Successfully fetched videos:", data);
-    return { data: data as Video[], error: null };
+    // Transform the response to match the Video interface
+    const videos = data.map((item: any) => ({
+      ...item,
+      vendor: item.vendor ? item.vendor[0] : null // Extract first vendor if exists
+    })) as Video[];
+
+    console.log("Successfully fetched videos:", videos);
+    return { data: videos, error: null };
   } catch (error) {
     console.error('Error in fetchVideos:', error);
     return { data: null, error };
