@@ -5,7 +5,7 @@ import { ToastProps } from "@/components/ui/toast";
 
 interface SideActionsProps {
   videos: any[];
-  toast: (props: ToastProps) => void;
+  toast: (props: { title: string; description?: string; variant?: "default" | "destructive" }) => void;
 }
 
 export const SideActions = ({ videos, toast }: SideActionsProps) => {
