@@ -7,6 +7,7 @@ import { VideoTabs } from "@/components/videos/VideoTabs";
 import { GamificationPanel } from "@/components/gamification/GamificationPanel";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { PrizeDisplay } from "@/components/prizes/PrizeDisplay";
+import { JudgesOverlay } from "@/components/judges/JudgesOverlay";
 
 interface MainContentProps {
   videos: any[];
@@ -75,6 +76,8 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
           <div className="absolute top-16 left-0 right-0 z-40">
             <PrizeDisplay />
           </div>
+
+          {videos.length > 0 && <JudgesOverlay videoId={videos[0].id} />}
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 z-50">

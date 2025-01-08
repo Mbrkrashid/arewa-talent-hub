@@ -3,7 +3,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, MessageCircle } from "lucide-react";
-import { Judge } from "./types";
+
+interface Judge {
+  id: string;
+  profile_id: string | null;
+  expertise: string | null;
+  bio: string | null;
+  status: 'online' | 'offline';
+  profiles: {
+    avatar_url: string | null;
+    username: string | null;
+  } | null;
+}
 
 export const JudgesOverlay = ({ videoId }: { videoId: string }) => {
   const [judges, setJudges] = useState<Judge[]>([]);
