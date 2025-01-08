@@ -40,7 +40,7 @@ export const JudgesPanel = () => {
             bio: judge.bio,
             status: judge.status === 'online' ? 'online' : 'offline',
             profiles: judge.profiles || null
-          })) as Judge[];
+          }));
           
           setJudges(transformedData);
         }
