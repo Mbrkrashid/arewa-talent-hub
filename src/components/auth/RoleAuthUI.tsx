@@ -20,9 +20,9 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <img 
-            src="/lovable-uploads/71c04352-12a7-46c9-a740-c9871f0bc04c.png" 
+            src="/lovable-uploads/55994fde-bb0d-41f5-9b9a-54931811b51d.png" 
             alt="Arewa Talent Hub" 
-            className="mx-auto h-32 w-auto"
+            className="mx-auto h-32 w-auto animate-float"
           />
           <h2 className="mt-6 text-3xl font-bold text-white">Welcome to Arewa Talent Hub</h2>
           <p className="mt-2 text-sm text-gray-400">
@@ -66,15 +66,23 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
                 variables: {
                   default: {
                     colors: {
-                      brand: '#22c55e',
-                      brandAccent: '#16a34a',
+                      brand: '#7C3AED',
+                      brandAccent: '#6D28D9',
+                      inputBackground: 'rgba(0,0,0,0.2)',
+                      inputText: 'white',
+                      inputPlaceholder: 'rgba(255,255,255,0.4)',
                     },
                   },
                 },
+                className: {
+                  button: 'bg-primary hover:bg-primary/90 text-white transition-all duration-300',
+                  input: 'bg-black/20 border-primary/20 text-white focus:ring-primary/50',
+                  label: 'text-gray-300',
+                  anchor: 'text-primary hover:text-primary/80 transition-colors',
+                },
               }}
-              providers={['google']}
+              providers={["google"]}
               redirectTo={`${siteUrl}/`}
-              onlyThirdPartyProviders={false}
               view="sign_up"
               localization={{
                 variables: {
