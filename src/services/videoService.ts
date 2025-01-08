@@ -25,7 +25,7 @@ export const fetchVideos = async () => {
       .from('video_content')
       .select(`
         *,
-        vendor:vendors!video_content_vendor_id_fkey (
+        vendor:vendors (
           business_name
         )
       `)
@@ -36,8 +36,13 @@ export const fetchVideos = async () => {
       throw error;
     }
 
+    if (!data) {
+      console.log('No videos found');
+      return { data: [], error: null };
+    }
+
     // Transform the response to match the Video interface
-    const videos = (data || []).map((item: any) => ({
+    const videos = data.map((item: any) => ({
       id: item.id,
       title: item.title,
       description: item.description,
