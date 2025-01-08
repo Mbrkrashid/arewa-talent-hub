@@ -45,10 +45,10 @@ export const AuthUI = ({ authError }: AuthUIProps) => {
       <Card className="max-w-md mx-auto bg-black/80 backdrop-blur-lg border-primary/20 p-8 rounded-lg shadow-2xl">
         <div className="mb-6 space-y-2 text-center">
           <h2 className="text-2xl font-semibold text-white">
-            Join Arewa Talent Hub
+            Join TikTok Talent Hub
           </h2>
           <p className="text-gray-400">
-            Create an account to participate or vote
+            Create an account to showcase your talent
           </p>
         </div>
 
