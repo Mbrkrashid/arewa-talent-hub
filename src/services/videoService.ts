@@ -36,7 +36,7 @@ export const fetchVideos = async () => {
         created_at,
         updated_at,
         category_id,
-        vendor:vendors (
+        vendor:vendors!video_content_vendor_id_fkey (
           business_name
         )
       `)
