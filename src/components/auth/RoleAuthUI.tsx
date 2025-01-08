@@ -6,12 +6,13 @@ import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { Video, Trophy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ProfilePicture } from '@/components/profile/ProfilePicture';
 
 export const RoleAuthUI = ({ authError }: { authError: any }) => {
   const [selectedRole, setSelectedRole] = useState<'participant' | 'voter' | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Get the current site URL for redirect
   const siteUrl = window.location.origin;
   console.log("Current site URL for redirect:", siteUrl);
 
@@ -59,6 +60,12 @@ export const RoleAuthUI = ({ authError }: { authError: any }) => {
           </div>
         ) : (
           <Card className="p-6 bg-black/20 border-primary/20">
+            <div className="mb-6 flex justify-center">
+              <ProfilePicture 
+                avatarUrl={avatarUrl} 
+                onAvatarChange={setAvatarUrl} 
+              />
+            </div>
             <Auth
               supabaseClient={supabase}
               appearance={{ 

@@ -35,7 +35,7 @@ const App = () => {
   }, [toast]);
 
   return (
-    <div className="bg-black min-h-screen text-white">
+    <div className="bg-black min-h-screen text-white w-full max-w-[480px] mx-auto relative overflow-hidden">
       <Routes>
         <Route path="/" element={<Index />} />
       </Routes>
