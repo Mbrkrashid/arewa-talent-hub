@@ -24,7 +24,6 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
   
   try {
     const { data, error } = await supabase
-      .schema('public')
       .from('video_content')
       .select(`
         id,
@@ -38,7 +37,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
         created_at,
         updated_at,
         vendor_id,
-        vendors:vendor_id (
+        vendors!inner (
           business_name
         )
       `)
