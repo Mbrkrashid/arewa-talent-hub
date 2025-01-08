@@ -1,17 +1,6 @@
 import { VideoCard } from "@/components/VideoCard";
 import { VideoScroll } from "@/components/VideoScroll";
-
-interface Video {
-  id: string;
-  title: string;
-  thumbnail_url: string;
-  likes_count: number;
-  vendor_id: string;
-  vendors: {
-    business_name: string;
-  };
-  level?: number;
-}
+import type { Video } from "@/services/videoService";
 
 interface VideoGridProps {
   videos: Video[];
