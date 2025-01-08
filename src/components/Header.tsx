@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { TokenBalance } from "@/components/TokenBalance";
-import { ChevronLeft, MoreVertical } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -32,24 +32,25 @@ export const Header = () => {
   }, []);
 
   return (
-    <header className="bg-[#1a1b1e] sticky top-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-14">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon">
-              <ChevronLeft className="h-5 w-5 text-gray-400" />
-            </Button>
-            <h1 className="text-lg font-semibold text-white">Arewa Talent Hub</h1>
+          <div className="flex items-center gap-4">
+            <TokenBalance />
           </div>
 
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="text-white">
+              <Search className="h-5 w-5" />
+            </Button>
             {isAuthenticated ? (
-              <>
-                <TokenBalance />
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-5 w-5 text-gray-400" />
-                </Button>
-              </>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="bg-primary text-white rounded-full"
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
             ) : (
               <Button
                 className="bg-primary hover:bg-primary/90"

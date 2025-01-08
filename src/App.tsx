@@ -35,9 +35,11 @@ const App = () => {
   }, [toast]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-    </Routes>
+    <div className="bg-black min-h-screen text-white">
+      <Routes>
+        <Route path="/" element={<Index />} />
+      </Routes>
+    </div>
   );
 };
 
