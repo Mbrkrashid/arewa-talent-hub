@@ -38,7 +38,18 @@ export const fetchVideos = async () => {
 
     // Transform the response to match the Video interface
     const videos = (data || []).map((item: any) => ({
-      ...item,
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      video_url: item.video_url,
+      thumbnail_url: item.thumbnail_url,
+      vendor_id: item.vendor_id,
+      likes_count: item.likes_count || 0,
+      views_count: item.views_count || 0,
+      shares_count: item.shares_count || 0,
+      created_at: item.created_at,
+      updated_at: item.updated_at,
+      category_id: item.category_id,
       vendor: item.vendor ? {
         business_name: item.vendor.business_name
       } : null
