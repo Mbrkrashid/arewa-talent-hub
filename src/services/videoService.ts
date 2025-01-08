@@ -25,7 +25,7 @@ export const fetchVideos = async () => {
       .from('video_content')
       .select(`
         *,
-        vendor:vendors(business_name)
+        vendor:vendors!video_content_vendor_id_fkey(business_name)
       `)
       .order('created_at', { ascending: false });
 
