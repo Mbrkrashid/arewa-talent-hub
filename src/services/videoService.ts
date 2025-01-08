@@ -36,11 +36,12 @@ export const fetchVideos = async () => {
         created_at,
         updated_at,
         category_id,
-        vendors!video_content_vendor_id_fkey (
+        vendors (
           business_name
         )
       `)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .throwOnError();
 
     if (error) {
       console.error('Error fetching videos:', error);
