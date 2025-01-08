@@ -27,7 +27,13 @@ export const AchievementsPanel = () => {
       try {
         const { data: achievementsData, error: achievementsError } = await supabase
           .from('achievements')
-          .select('id, name, description, points, badge_image_url')
+          .select(`
+            id,
+            name,
+            description,
+            points,
+            badge_image_url
+          `)
           .order('points', { ascending: true });
 
         if (achievementsError) throw achievementsError;
@@ -37,7 +43,10 @@ export const AchievementsPanel = () => {
 
         const { data: userAchievementsData, error: userAchievementsError } = await supabase
           .from('user_achievements')
-          .select('achievement_id, earned_at')
+          .select(`
+            achievement_id,
+            earned_at
+          `)
           .eq('user_id', user.id);
 
         if (userAchievementsError) throw userAchievementsError;

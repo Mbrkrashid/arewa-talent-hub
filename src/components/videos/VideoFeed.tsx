@@ -28,7 +28,7 @@ export const VideoFeed = () => {
             thumbnail_url,
             likes_count,
             vendor_id,
-            vendors!inner (
+            vendors:vendors (
               business_name
             )
           `)

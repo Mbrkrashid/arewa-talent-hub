@@ -19,7 +19,7 @@ export const JudgesPanel = () => {
             expertise,
             bio,
             status,
-            profiles (
+            profiles:profiles (
               avatar_url,
               username
             )
@@ -33,17 +33,11 @@ export const JudgesPanel = () => {
 
         console.log('Fetched judges:', data);
         if (data) {
-          const transformedData: Judge[] = data.map(judge => ({
-            id: judge.id,
-            profile_id: judge.profile_id,
-            expertise: judge.expertise,
-            bio: judge.bio,
+          const transformedData = data.map(judge => ({
+            ...judge,
             status: judge.status === 'online' ? 'online' : 'offline',
-            profiles: judge.profiles ? {
-              avatar_url: judge.profiles.avatar_url,
-              username: judge.profiles.username
-            } : null
-          }));
+            profiles: judge.profiles || null
+          })) as Judge[];
           
           setJudges(transformedData);
         }
