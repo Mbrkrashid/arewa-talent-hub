@@ -1,14 +1,49 @@
-import { useState } from "react";
-import { Upload, Video } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Upload, Video, Music2, Youtube, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+interface BackgroundMusic {
+  id: string;
+  title: string;
+  artist: string;
+  audio_url: string;
+}
 
 export const VideoUpload = () => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [backgroundMusic, setBackgroundMusic] = useState<BackgroundMusic[]>([]);
+  const [selectedMusic, setSelectedMusic] = useState<string | null>(null);
+  const [showMusicPicker, setShowMusicPicker] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchBackgroundMusic();
+  }, []);
+
+  const fetchBackgroundMusic = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('background_music')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setBackgroundMusic(data || []);
+    } catch (error) {
+      console.error('Error fetching background music:', error);
+    }
+  };
+
+  const handleMusicSelect = (musicId: string) => {
+    setSelectedMusic(musicId);
+    setShowMusicPicker(false);
+  };
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -68,19 +103,6 @@ export const VideoUpload = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      // Create a FormData object for tracking progress
-      const formData = new FormData();
-      formData.append('file', file);
-
-      // Custom upload with progress tracking
-      const xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = (event.loaded / event.total) * 100;
-          setProgress(percentComplete);
-        }
-      });
-
       const { error: uploadError, data: storageData } = await supabase.storage
         .from('videos')
         .upload(fileName, file, {
@@ -95,8 +117,16 @@ export const VideoUpload = () => {
         .from('videos')
         .getPublicUrl(fileName);
 
-      // Generate thumbnail (using video URL as thumbnail for now)
-      const thumbnailUrl = publicUrl;
+      // Get selected music details if any
+      let musicUrl = null;
+      let musicTitle = null;
+      if (selectedMusic) {
+        const selectedTrack = backgroundMusic.find(m => m.id === selectedMusic);
+        if (selectedTrack) {
+          musicUrl = selectedTrack.audio_url;
+          musicTitle = selectedTrack.title;
+        }
+      }
 
       // Create video entry in database
       const { error: dbError } = await supabase
@@ -105,8 +135,11 @@ export const VideoUpload = () => {
           vendor_id: user.id,
           title: file.name.split('.')[0],
           video_url: publicUrl,
-          thumbnail_url: thumbnailUrl,
+          thumbnail_url: publicUrl,
           description: "My talent showcase",
+          music_url: musicUrl,
+          music_title: musicTitle,
+          social_media_source: null // Will be updated when shared to social platforms
         });
 
       if (dbError) throw dbError;
@@ -138,21 +171,81 @@ export const VideoUpload = () => {
       <p className="text-sm text-gray-400 text-center">
         Upload your video to participate in the talent show
       </p>
+
+      <Dialog open={showMusicPicker} onOpenChange={setShowMusicPicker}>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="gap-2">
+            <Music2 className="h-4 w-4" />
+            {selectedMusic ? 'Change Music' : 'Add Background Music'}
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Choose Background Music</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            {backgroundMusic.map((track) => (
+              <Button
+                key={track.id}
+                variant="outline"
+                className="justify-start gap-2"
+                onClick={() => handleMusicSelect(track.id)}
+              >
+                <Music2 className="h-4 w-4" />
+                {track.title} - {track.artist}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {uploading && (
         <div className="w-full space-y-2">
           <Progress value={progress} className="w-full" />
           <p className="text-sm text-center text-gray-400">{Math.round(progress)}%</p>
         </div>
       )}
-      <label htmlFor="video-upload">
-        <Button 
-          className="bg-primary hover:bg-primary/90"
-          disabled={uploading}
+
+      <div className="flex gap-4">
+        <label htmlFor="video-upload">
+          <Button 
+            className="bg-primary hover:bg-primary/90"
+            disabled={uploading}
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            {uploading ? "Uploading..." : "Upload Video"}
+          </Button>
+        </label>
+
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() => {
+            toast({
+              title: "Coming Soon",
+              description: "Social media integration will be available soon!",
+            });
+          }}
         >
-          <Upload className="h-4 w-4 mr-2" />
-          {uploading ? "Uploading..." : "Upload Video"}
+          <Youtube className="h-4 w-4" />
+          Import from YouTube
         </Button>
-      </label>
+
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() => {
+            toast({
+              title: "Coming Soon",
+              description: "Social media integration will be available soon!",
+            });
+          }}
+        >
+          <Instagram className="h-4 w-4" />
+          Import from Instagram
+        </Button>
+      </div>
+
       <input
         id="video-upload"
         type="file"
