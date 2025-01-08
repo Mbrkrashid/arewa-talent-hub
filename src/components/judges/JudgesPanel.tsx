@@ -24,8 +24,7 @@ export const JudgesPanel = () => {
               username
             )
           `)
-          .limit(3)
-          .throwOnError();
+          .limit(3);
 
         if (error) {
           console.error('Error fetching judges:', error);
@@ -41,8 +40,8 @@ export const JudgesPanel = () => {
             bio: judge.bio,
             status: (judge.status === 'online' ? 'online' : 'offline') as 'online' | 'offline',
             profiles: judge.profiles ? {
-              avatar_url: judge.profiles.avatar_url,
-              username: judge.profiles.username
+              avatar_url: judge.profiles.avatar_url || null,
+              username: judge.profiles.username || null
             } : null
           }));
           

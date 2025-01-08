@@ -8,9 +8,6 @@ export const supabase = createClient<Database>(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
   {
-    db: {
-      schema: 'public'
-    },
     auth: {
       persistSession: true,
       autoRefreshToken: true
