@@ -39,7 +39,10 @@ export const JudgesPanel = () => {
             expertise: judge.expertise,
             bio: judge.bio,
             status: (judge.status === 'online' ? 'online' : 'offline') as 'online' | 'offline',
-            profiles: judge.profiles
+            profiles: judge.profiles ? {
+              avatar_url: judge.profiles.avatar_url,
+              username: judge.profiles.username
+            } : null
           }));
           
           setJudges(transformedData);
