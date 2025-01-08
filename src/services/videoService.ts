@@ -13,6 +13,10 @@ export interface Video {
   level?: number;
   views_count?: number;
   category_id?: string;
+  description?: string;
+  shares_count?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any }> => {
@@ -24,11 +28,16 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
       .select(`
         id,
         title,
-        thumbnail_url,
+        description,
         video_url,
+        thumbnail_url,
+        views_count,
         likes_count,
+        shares_count,
+        created_at,
+        updated_at,
         vendor_id,
-        vendors (
+        vendors:vendor_id (
           business_name
         )
       `)

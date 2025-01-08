@@ -6,6 +6,7 @@ import { MainContent } from "@/components/MainContent";
 import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
 import { Session } from "@supabase/supabase-js";
 import type { Video } from "@/services/videoService";
+import { fetchVideos } from "@/services/videoService";
 
 const Index = () => {
   const { toast } = useToast();
@@ -40,34 +41,21 @@ const Index = () => {
   }, [toast]);
 
   useEffect(() => {
-    const fetchVideos = async () => {
+    const loadVideos = async () => {
       try {
         setLoading(true);
         console.log("Fetching videos from database...");
         
-        const { data, error } = await supabase
-          .from('video_content')
-          .select(`
-            id,
-            title,
-            description,
-            video_url,
-            thumbnail_url,
-            views_count,
-            likes_count,
-            shares_count,
-            created_at,
-            updated_at,
-            vendor_id,
-            vendors:vendor_id (
-              business_name
-            )
-          `)
-          .order('created_at', { ascending: false });
+        const { data, error } = await fetchVideos();
 
         if (error) {
-          console.error('Supabase error:', error);
-          throw error;
+          console.error('Error fetching videos:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load videos",
+            variant: "destructive",
+          });
+          return;
         }
         
         console.log("Fetched videos:", data);
@@ -84,7 +72,7 @@ const Index = () => {
       }
     };
 
-    fetchVideos();
+    loadVideos();
   }, [toast]);
 
   if (!session) {
