@@ -1,54 +1,42 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export interface Video {
+export type Video = {
   id: string;
   title: string;
-  thumbnail_url: string | null;
+  description: string | null;
   video_url: string;
-  likes_count: number;
+  thumbnail_url: string | null;
   vendor_id: string;
-  vendors?: {
+  likes_count: number | null;
+  views_count: number | null;
+  shares_count: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+  category_id: string | null;
+  vendor: {
     business_name: string;
   } | null;
-  level?: number;
-  views_count?: number;
-  category_id?: string;
-  description?: string;
-  shares_count?: number;
-  created_at?: string;
-  updated_at?: string;
-}
+};
 
-export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any }> => {
-  console.log('Fetching videos from Supabase...');
-  
+export const fetchVideos = async () => {
+  console.log("Fetching videos from Supabase...");
   try {
     const { data, error } = await supabase
       .from('video_content')
       .select(`
         *,
-        vendors (
-          business_name
-        )
+        vendor:vendors(business_name)
       `)
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching videos:', error);
-      return { data: null, error };
+      throw error;
     }
 
-    console.log('Successfully fetched videos:', data);
-    
-    const videosWithLevel = data?.map(video => ({
-      ...video,
-      level: Math.floor((video.likes_count || 0) / 100) + 1,
-      vendors: video.vendors || { business_name: "Anonymous" }
-    })) as Video[];
-
-    return { data: videosWithLevel, error: null };
+    return { data, error: null };
   } catch (error) {
-    console.error('Unexpected error in fetchVideos:', error);
+    console.error('Error fetching videos:', error);
     return { data: null, error };
   }
 };

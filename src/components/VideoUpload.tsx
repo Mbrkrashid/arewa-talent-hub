@@ -68,6 +68,19 @@ export const VideoUpload = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
+      // Create a FormData object for tracking progress
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Custom upload with progress tracking
+      const xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          setProgress(percentComplete);
+        }
+      });
+
       const { error: uploadError, data: storageData } = await supabase.storage
         .from('videos')
         .upload(fileName, file, {
@@ -82,8 +95,8 @@ export const VideoUpload = () => {
         .from('videos')
         .getPublicUrl(fileName);
 
-      // Generate thumbnail (you might want to implement a proper thumbnail generation service)
-      const thumbnailUrl = publicUrl; // For now, using video URL as thumbnail
+      // Generate thumbnail (using video URL as thumbnail for now)
+      const thumbnailUrl = publicUrl;
 
       // Create video entry in database
       const { error: dbError } = await supabase
