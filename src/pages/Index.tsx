@@ -83,7 +83,7 @@ const Index = () => {
     <div className="min-h-screen overflow-hidden bg-black">
       <Header />
       <main className="container mx-auto px-4">
-        <MainContent videos={videos} loading={loading} />
+        <MainContent videos={videos} loading={loading} showProgress={false} />
       </main>
     </div>
   );

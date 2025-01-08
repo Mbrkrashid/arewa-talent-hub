@@ -12,9 +12,10 @@ import { JudgesOverlay } from "@/components/judges/JudgesOverlay";
 interface MainContentProps {
   videos: any[];
   loading: boolean;
+  showProgress?: boolean;
 }
 
-export const MainContent = ({ videos, loading }: MainContentProps) => {
+export const MainContent = ({ videos, loading, showProgress = false }: MainContentProps) => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [totalVotes, setTotalVotes] = useState(0);
   const [participantLevel, setParticipantLevel] = useState(1);
@@ -66,12 +67,14 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
             <SideActions videos={videos} toast={toast} />
           </div>
 
-          <div className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto">
-            <div className="p-4 space-y-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-              <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
-              <div className="h-16" />
+          {showProgress && (
+            <div className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto">
+              <div className="p-4 space-y-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
+                <div className="h-16" />
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="absolute top-16 left-0 right-0 z-40">
             <PrizeDisplay />
