@@ -25,7 +25,9 @@ export const fetchVideos = async () => {
       .from('video_content')
       .select(`
         *,
-        vendor:vendors(business_name)
+        vendor:vendors!video_content_vendor_id_fkey (
+          business_name
+        )
       `)
       .order('created_at', { ascending: false });
 
@@ -34,6 +36,7 @@ export const fetchVideos = async () => {
       throw error;
     }
 
+    console.log("Successfully fetched videos:", data);
     return { data, error: null };
   } catch (error) {
     console.error('Error fetching videos:', error);
