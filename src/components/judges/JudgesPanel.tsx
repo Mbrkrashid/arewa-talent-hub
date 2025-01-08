@@ -39,9 +39,9 @@ export const JudgesPanel = () => {
             expertise: judge.expertise,
             bio: judge.bio,
             status: (judge.status === 'online' ? 'online' : 'offline') as 'online' | 'offline',
-            profiles: judge.profiles ? {
-              avatar_url: judge.profiles.avatar_url,
-              username: judge.profiles.username
+            profiles: judge.profiles && Array.isArray(judge.profiles) && judge.profiles.length > 0 ? {
+              avatar_url: judge.profiles[0].avatar_url,
+              username: judge.profiles[0].username
             } : null
           }));
           
