@@ -24,7 +24,18 @@ export const fetchVideos = async () => {
     const { data, error } = await supabase
       .from('video_content')
       .select(`
-        *,
+        id,
+        title,
+        description,
+        video_url,
+        thumbnail_url,
+        vendor_id,
+        likes_count,
+        views_count,
+        shares_count,
+        created_at,
+        updated_at,
+        category_id,
         vendor:vendors (
           business_name
         )
@@ -41,8 +52,10 @@ export const fetchVideos = async () => {
       return { data: [], error: null };
     }
 
+    console.log('Raw video data:', data);
+
     // Transform the response to match the Video interface
-    const videos = data.map((item: any) => ({
+    const videos = data.map((item: any): Video => ({
       id: item.id,
       title: item.title,
       description: item.description,
@@ -58,9 +71,9 @@ export const fetchVideos = async () => {
       vendor: item.vendor ? {
         business_name: item.vendor.business_name
       } : null
-    })) as Video[];
+    }));
 
-    console.log("Successfully fetched videos:", videos);
+    console.log("Successfully transformed videos:", videos);
     return { data: videos, error: null };
   } catch (error) {
     console.error('Error in fetchVideos:', error);
