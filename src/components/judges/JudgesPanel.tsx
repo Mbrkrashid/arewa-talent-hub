@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Judge } from "./types";
 
@@ -19,7 +19,7 @@ export const JudgesPanel = () => {
             expertise,
             bio,
             status,
-            profiles (
+            profiles:profiles (
               avatar_url,
               username
             )
@@ -38,7 +38,6 @@ export const JudgesPanel = () => {
             status: judge.status === 'online' ? 'online' : 'offline',
             profiles: judge.profiles || null
           })) as Judge[];
-          
           setJudges(transformedData);
         }
       } catch (error) {
@@ -65,7 +64,7 @@ export const JudgesPanel = () => {
             </div>
             <div>
               <h3 className="font-semibold text-white">{judge.profiles?.username}</h3>
-              <p className="text-sm text-gray-400">{judge.expertise}</p>
+              <p className="text-xs text-gray-400">{judge.expertise}</p>
             </div>
           </div>
         </Card>

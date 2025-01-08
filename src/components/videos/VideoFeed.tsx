@@ -18,7 +18,7 @@ export const VideoFeed = () => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      console.log('Fetching videos...');
+      console.log('Fetching videos from Supabase...');
       try {
         const { data, error } = await supabase
           .from('video_content')
@@ -28,7 +28,7 @@ export const VideoFeed = () => {
             thumbnail_url,
             likes_count,
             vendor_id,
-            vendors (
+            vendors:vendors (
               business_name
             )
           `)
@@ -39,15 +39,16 @@ export const VideoFeed = () => {
           return;
         }
 
-        console.log('Fetched videos:', data);
+        console.log('Successfully fetched videos:', data);
         const transformedVideos = data?.map(video => ({
           ...video,
+          level: Math.floor((video.likes_count || 0) / 100) + 1,
           vendors: video.vendors || { business_name: "Anonymous" }
         })) as Video[];
         
         setVideos(transformedVideos);
       } catch (error) {
-        console.error('Error in fetchVideos:', error);
+        console.error('Unexpected error in fetchVideos:', error);
       }
     };
 
