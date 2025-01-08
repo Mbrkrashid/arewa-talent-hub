@@ -19,7 +19,7 @@ export const JudgesPanel = () => {
             expertise,
             bio,
             status,
-            profiles:profiles (
+            profiles (
               avatar_url,
               username
             )
