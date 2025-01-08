@@ -37,9 +37,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
         created_at,
         updated_at,
         vendor_id,
-        vendors (
-          business_name
-        )
+        vendors:vendors(business_name)
       `)
       .order('created_at', { ascending: false });
 
