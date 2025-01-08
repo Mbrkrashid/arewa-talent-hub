@@ -24,8 +24,21 @@ export const fetchVideos = async () => {
     const { data, error } = await supabase
       .from('video_content')
       .select(`
-        *,
-        vendor:vendors!video_content_vendor_id_fkey(business_name)
+        id,
+        title,
+        description,
+        video_url,
+        thumbnail_url,
+        vendor_id,
+        likes_count,
+        views_count,
+        shares_count,
+        created_at,
+        updated_at,
+        category_id,
+        vendor:vendors (
+          business_name
+        )
       `)
       .order('created_at', { ascending: false });
 
