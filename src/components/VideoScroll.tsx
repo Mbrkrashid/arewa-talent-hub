@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import type { Video } from "@/services/videoService";
-import { Volume2, VolumeX, Heart, MessageCircle, Share2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { VideoControls } from "@/components/videos/VideoControls";
+import { VideoActions } from "@/components/videos/VideoActions";
+import { VideoInfo } from "@/components/videos/VideoInfo";
 
 interface VideoScrollProps {
   videos: Video[];
@@ -15,7 +16,6 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
 
   useEffect(() => {
-    // Pause all videos except the current one
     Object.entries(videoRefs.current).forEach(([id, video]) => {
       if (id === videos[currentIndex]?.id) {
         video.play().catch(console.error);
@@ -82,53 +82,18 @@ export const VideoScroll = ({ videos, loading }: VideoScrollProps) => {
             
             {/* Video controls */}
             <div className="absolute bottom-20 right-4 flex flex-col items-center gap-6">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white bg-black/50 rounded-full h-12 w-12"
-                onClick={toggleMute}
-              >
-                {isMuted ? (
-                  <VolumeX className="h-6 w-6" />
-                ) : (
-                  <Volume2 className="h-6 w-6" />
-                )}
-              </Button>
-              
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white bg-black/50 rounded-full h-12 w-12"
-              >
-                <Heart className="h-6 w-6" />
-                <span className="text-xs mt-1">{video.likes_count || 0}</span>
-              </Button>
-              
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white bg-black/50 rounded-full h-12 w-12"
-              >
-                <MessageCircle className="h-6 w-6" />
-                <span className="text-xs mt-1">0</span>
-              </Button>
-              
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white bg-black/50 rounded-full h-12 w-12"
-              >
-                <Share2 className="h-6 w-6" />
-                <span className="text-xs mt-1">{video.shares_count || 0}</span>
-              </Button>
+              <VideoControls isMuted={isMuted} onToggleMute={toggleMute} />
+              <VideoActions 
+                likesCount={video.likes_count || 0}
+                sharesCount={video.shares_count || 0}
+              />
             </div>
 
-            {/* Video info */}
-            <div className="absolute bottom-24 left-4 right-20 text-white">
-              <h3 className="text-lg font-semibold mb-2">{video.title}</h3>
-              <p className="text-sm text-white/80 mb-2">@{video.vendor?.business_name || "Anonymous"}</p>
-              <p className="text-sm text-white/60 line-clamp-2">{video.description}</p>
-            </div>
+            <VideoInfo 
+              title={video.title}
+              artist={video.vendor?.business_name || "Anonymous"}
+              description={video.description}
+            />
           </div>
         );
       })}
