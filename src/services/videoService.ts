@@ -40,7 +40,8 @@ export const fetchVideos = async () => {
           business_name
         )
       `)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .returns<Video[]>();
 
     if (error) {
       console.error('Error fetching videos:', error);
@@ -48,7 +49,7 @@ export const fetchVideos = async () => {
     }
 
     console.log("Successfully fetched videos:", data);
-    return { data: data as Video[], error: null };
+    return { data, error: null };
   } catch (error) {
     console.error('Error in fetchVideos:', error);
     return { data: null, error };
