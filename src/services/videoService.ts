@@ -37,7 +37,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
         created_at,
         updated_at,
         vendor_id,
-        vendors!inner (
+        vendors (
           business_name
         )
       `)
