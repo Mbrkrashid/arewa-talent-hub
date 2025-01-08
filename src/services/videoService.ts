@@ -26,18 +26,7 @@ export const fetchVideos = async (): Promise<{ data: Video[] | null; error: any 
     const { data, error } = await supabase
       .from('video_content')
       .select(`
-        id,
-        title,
-        thumbnail_url,
-        video_url,
-        likes_count,
-        vendor_id,
-        views_count,
-        category_id,
-        description,
-        shares_count,
-        created_at,
-        updated_at,
+        *,
         vendors (
           business_name
         )

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { VideoScroll } from "@/components/VideoScroll";
 import { useToast } from "@/hooks/use-toast";
 import { SideActions } from "@/components/actions/SideActions";
 import { TopActions } from "@/components/actions/TopActions";
@@ -20,19 +19,28 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, total_votes, participant_level')
-          .eq('id', user.id)
-          .single();
-        
-        if (profile) {
-          setUserRole(profile.role);
-          setTotalVotes(profile.total_votes || 0);
-          setParticipantLevel(profile.participant_level || 1);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role, total_votes, participant_level')
+            .eq('id', user.id)
+            .single();
+          
+          if (error) {
+            console.error('Error fetching profile:', error);
+            return;
+          }
+          
+          if (profile) {
+            setUserRole(profile.role);
+            setTotalVotes(profile.total_votes || 0);
+            setParticipantLevel(profile.participant_level || 1);
+          }
         }
+      } catch (error) {
+        console.error('Error in fetchUserProfile:', error);
       }
     };
 
@@ -40,9 +48,11 @@ export const MainContent = ({ videos, loading }: MainContentProps) => {
   }, []);
 
   return (
-    <div className="relative h-[calc(100vh-4rem)] w-full max-w-3xl mx-auto">
+    <div className="relative h-[calc(100vh-4rem)] w-full max-w-3xl mx-auto bg-black/20">
       <TopActions userRole={userRole} />
-      <VideoTabs videos={videos} loading={loading} />
+      <div className="h-full overflow-hidden">
+        <VideoTabs videos={videos} loading={loading} />
+      </div>
       <SideActions videos={videos} toast={toast} />
       <GamificationPanel level={participantLevel} totalVotes={totalVotes} />
     </div>

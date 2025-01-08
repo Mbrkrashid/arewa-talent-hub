@@ -52,7 +52,7 @@ const Index = () => {
           console.error('Error fetching videos:', error);
           toast({
             title: "Error",
-            description: "Failed to load videos",
+            description: "Failed to load videos. Please try again later.",
             variant: "destructive",
           });
           return;
@@ -64,7 +64,7 @@ const Index = () => {
         console.error('Error fetching videos:', error);
         toast({
           title: "Error",
-          description: "Failed to load videos",
+          description: "Failed to load videos. Please try again later.",
           variant: "destructive",
         });
       } finally {
@@ -80,9 +80,11 @@ const Index = () => {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-black">
+    <div className="min-h-screen overflow-hidden bg-black">
       <Header />
-      <MainContent videos={videos} loading={loading} />
+      <main className="container mx-auto px-4">
+        <MainContent videos={videos} loading={loading} />
+      </main>
     </div>
   );
 };
