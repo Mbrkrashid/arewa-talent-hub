@@ -19,11 +19,7 @@ interface VideoGridProps {
   viewMode?: "grid" | "scroll";
 }
 
-export const VideoGrid = ({ videos, loading, viewMode = "grid" }: VideoGridProps) => {
-  if (viewMode === "scroll") {
-    return <VideoScroll videos={videos} loading={loading} />;
-  }
-
+export const VideoGrid = ({ videos, loading, viewMode = "scroll" }: VideoGridProps) => {
   if (loading) {
     return (
       <div className="col-span-2 text-center py-12 text-gray-400">
@@ -38,6 +34,10 @@ export const VideoGrid = ({ videos, loading, viewMode = "grid" }: VideoGridProps
         No videos uploaded yet. Be the first to share your talent!
       </div>
     );
+  }
+
+  if (viewMode === "scroll") {
+    return <VideoScroll videos={videos} loading={loading} />;
   }
 
   return (

@@ -39,7 +39,7 @@ export const Header = () => {
             <Button variant="ghost" size="icon">
               <ChevronLeft className="h-5 w-5 text-gray-400" />
             </Button>
-            <h1 className="text-lg font-semibold text-white">TikTok Talent Hub</h1>
+            <h1 className="text-lg font-semibold text-white">Arewa Talent Hub</h1>
           </div>
 
           <div className="flex items-center gap-2">
