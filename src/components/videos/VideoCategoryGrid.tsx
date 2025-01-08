@@ -22,25 +22,32 @@ export const VideoCategoryGrid = () => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const { data, error } = await supabase
-        .from('video_content')
-        .select(`
-          id,
-          title,
-          thumbnail_url,
-          likes_count,
-          views_count,
-          category_id,
-          vendors (
-            business_name
-          )
-        `)
-        .order('views_count', { ascending: false });
+      console.log('Fetching videos by category...');
+      try {
+        const { data, error } = await supabase
+          .from('video_content')
+          .select(`
+            id,
+            title,
+            thumbnail_url,
+            likes_count,
+            views_count,
+            category_id,
+            vendors!inner (
+              business_name
+            )
+          `)
+          .order('views_count', { ascending: false });
 
-      if (!error && data) {
-        const transformedData = data.map(video => ({
+        if (error) {
+          console.error('Error fetching videos:', error);
+          return;
+        }
+
+        console.log('Fetched category videos:', data);
+        const transformedData = data?.map(video => ({
           ...video,
-          vendors: video.vendors?.[0] || { business_name: "Anonymous" }
+          vendors: video.vendors || { business_name: "Anonymous" }
         })) as Video[];
 
         const grouped = transformedData.reduce((acc, video) => {
@@ -50,6 +57,8 @@ export const VideoCategoryGrid = () => {
         }, {} as Record<string, Video[]>);
         
         setVideosByCategory(grouped);
+      } catch (error) {
+        console.error('Error in fetchVideos:', error);
       }
     };
 

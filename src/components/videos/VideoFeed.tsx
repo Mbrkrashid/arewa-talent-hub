@@ -18,27 +18,36 @@ export const VideoFeed = () => {
 
   useEffect(() => {
     const fetchVideos = async () => {
-      const { data, error } = await supabase
-        .from('video_content')
-        .select(`
-          id,
-          title,
-          thumbnail_url,
-          likes_count,
-          vendor_id,
-          vendors (
-            business_name
-          )
-        `)
-        .order('created_at', { ascending: false });
+      console.log('Fetching videos...');
+      try {
+        const { data, error } = await supabase
+          .from('video_content')
+          .select(`
+            id,
+            title,
+            thumbnail_url,
+            likes_count,
+            vendor_id,
+            vendors!inner (
+              business_name
+            )
+          `)
+          .order('created_at', { ascending: false });
 
-      if (!error && data) {
-        const transformedVideos = data.map(video => ({
+        if (error) {
+          console.error('Error fetching videos:', error);
+          return;
+        }
+
+        console.log('Fetched videos:', data);
+        const transformedVideos = data?.map(video => ({
           ...video,
-          vendors: video.vendors?.[0] || { business_name: "Anonymous" }
+          vendors: video.vendors || { business_name: "Anonymous" }
         })) as Video[];
         
         setVideos(transformedVideos);
+      } catch (error) {
+        console.error('Error in fetchVideos:', error);
       }
     };
 

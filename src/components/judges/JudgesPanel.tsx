@@ -9,30 +9,38 @@ export const JudgesPanel = () => {
 
   useEffect(() => {
     const fetchJudges = async () => {
-      const { data, error } = await supabase
-        .from('judges')
-        .select(`
-          id,
-          profile_id,
-          expertise,
-          bio,
-          status,
-          profiles (
-            avatar_url,
-            username
-          )
-        `)
-        .limit(3);
+      console.log('Fetching judges...');
+      try {
+        const { data, error } = await supabase
+          .from('judges')
+          .select(`
+            id,
+            profile_id,
+            expertise,
+            bio,
+            status,
+            profiles!inner (
+              avatar_url,
+              username
+            )
+          `)
+          .limit(3);
 
-      if (!error && data) {
-        const transformedData = data.map(judge => ({
+        if (error) {
+          console.error('Error fetching judges:', error);
+          return;
+        }
+
+        console.log('Fetched judges:', data);
+        const transformedData = data?.map(judge => ({
           ...judge,
           status: judge.status === 'online' ? 'online' : 'offline',
-          profiles: judge.profiles?.[0] || null
+          profiles: judge.profiles || null
         })) as Judge[];
         
         setJudges(transformedData);
-        console.log("Fetched judges:", transformedData);
+      } catch (error) {
+        console.error('Error in fetchJudges:', error);
       }
     };
 
