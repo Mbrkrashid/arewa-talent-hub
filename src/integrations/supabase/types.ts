@@ -527,6 +527,30 @@ export type Database = {
           },
         ]
       }
+      prize_pool: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string | null
+          id: string
+          position: number
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          position: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          position?: number
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null

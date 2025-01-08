@@ -8,8 +8,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { Video } from "@/services/videoService";
 import { Session } from "@supabase/supabase-js";
-import WebApp from '@twa-dev/sdk';
-import { useWeb3 } from "@/contexts/Web3Context";
 import { TokenBalance } from "@/components/TokenBalance";
 import { JudgesOverlay } from "@/components/judges/JudgesOverlay";
 
@@ -18,19 +16,8 @@ const Index = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const { isTelegram } = useWeb3();
 
   useEffect(() => {
-    if (isTelegram) {
-      WebApp.ready();
-      console.log("Telegram WebApp initialized");
-      
-      const telegramUser = WebApp.initDataUnsafe.user;
-      if (telegramUser) {
-        console.log("Telegram user:", telegramUser);
-      }
-    }
-
     console.log("Setting up auth state change listener");
     
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -53,7 +40,7 @@ const Index = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [toast, isTelegram]);
+  }, [toast]);
 
   return (
     <div className="min-h-screen bg-[#1a1b1e]">
@@ -76,7 +63,7 @@ const Index = () => {
             <div className="bg-[#1a1b1e] rounded-lg p-4 text-center">
               <Diamond className="h-6 w-6 text-blue-400 mx-auto mb-2" />
               <TokenBalance />
-              <p className="text-sm text-gray-400">Eanira Tokens</p>
+              <p className="text-sm text-gray-400">Tokens</p>
             </div>
             <div className="bg-[#1a1b1e] rounded-lg p-4 text-center">
               <Trophy className="h-6 w-6 text-yellow-400 mx-auto mb-2" />
