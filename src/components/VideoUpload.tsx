@@ -3,17 +3,40 @@ import { Upload, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Progress } from "@/components/ui/progress";
 
 export const VideoUpload = () => {
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const { toast } = useToast();
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
+      setProgress(0);
       const file = event.target.files?.[0];
       
       if (!file) return;
+
+      // Validate file size (max 100MB)
+      if (file.size > 100 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Maximum file size is 100MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('video/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a video file",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -43,10 +66,18 @@ export const VideoUpload = () => {
 
       // Upload to Supabase storage
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+
       const { error: uploadError, data: storageData } = await supabase.storage
         .from('videos')
-        .upload(fileName, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false,
+          onUploadProgress: (progress) => {
+            const percent = (progress.loaded / progress.total) * 100;
+            setProgress(percent);
+          },
+        });
 
       if (uploadError) throw uploadError;
 
@@ -55,6 +86,9 @@ export const VideoUpload = () => {
         .from('videos')
         .getPublicUrl(fileName);
 
+      // Generate thumbnail (you might want to implement a proper thumbnail generation service)
+      const thumbnailUrl = publicUrl; // For now, using video URL as thumbnail
+
       // Create video entry in database
       const { error: dbError } = await supabase
         .from('video_content')
@@ -62,8 +96,8 @@ export const VideoUpload = () => {
           vendor_id: user.id,
           title: file.name.split('.')[0],
           video_url: publicUrl,
+          thumbnail_url: thumbnailUrl,
           description: "My talent showcase",
-          thumbnail_url: publicUrl // You might want to generate a proper thumbnail
         });
 
       if (dbError) throw dbError;
@@ -84,6 +118,7 @@ export const VideoUpload = () => {
       });
     } finally {
       setUploading(false);
+      setProgress(0);
     }
   };
 
@@ -94,6 +129,12 @@ export const VideoUpload = () => {
       <p className="text-sm text-gray-400 text-center">
         Upload your video to participate in the talent show
       </p>
+      {uploading && (
+        <div className="w-full space-y-2">
+          <Progress value={progress} className="w-full" />
+          <p className="text-sm text-center text-gray-400">{Math.round(progress)}%</p>
+        </div>
+      )}
       <label htmlFor="video-upload">
         <Button 
           className="bg-primary hover:bg-primary/90"
