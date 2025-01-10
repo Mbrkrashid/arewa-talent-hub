@@ -28,7 +28,15 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     const { data, error } = await supabase
       .from('video_content')
       .select(`
-        *,
+        id,
+        title,
+        description,
+        video_url,
+        thumbnail_url,
+        views_count,
+        likes_count,
+        shares_count,
+        category_id,
         vendor:vendors(business_name)
       `)
       .order('created_at', { ascending: false });
@@ -36,7 +44,6 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     if (error) {
       console.error('Error fetching videos:', error);
       
-      // Check if we should retry
       if (attempt < MAX_RETRIES) {
         console.log(`Retrying... Attempt ${attempt + 1} of ${MAX_RETRIES}`);
         await sleep(RETRY_DELAY);

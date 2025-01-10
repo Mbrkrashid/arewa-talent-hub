@@ -51,10 +51,29 @@ export const MainContent = ({ videos, loading, showProgress = false }: MainConte
     fetchUserProfile();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-black flex items-center justify-center">
+        <div className="text-white animate-pulse">Loading amazing talents...</div>
+      </div>
+    );
+  }
+
+  if (!videos.length) {
+    return (
+      <div className="fixed inset-0 bg-black flex items-center justify-center">
+        <div className="text-center text-white space-y-4">
+          <h2 className="text-xl font-semibold">No Videos Yet</h2>
+          <p className="text-gray-400">Be the first to showcase your talent!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black">
       <div className="relative h-full w-full max-w-3xl mx-auto">
-        <div className="h-full overflow-y-auto">
+        <div className="h-full overflow-hidden">
           <VideoTabs videos={videos} loading={loading} />
         </div>
 
