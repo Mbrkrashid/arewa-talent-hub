@@ -39,7 +39,7 @@ export const VideoTabs = ({ videos, loading }: VideoTabsProps) => {
       
       <TabsContent value="following" className="h-full m-0 outline-none">
         <VideoScroll 
-          videos={videos.filter(video => video.isFollowing)} 
+          videos={videos.filter(video => video.isFollowing === true)} 
           loading={loading} 
         />
       </TabsContent>

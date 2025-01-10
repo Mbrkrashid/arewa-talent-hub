@@ -11,6 +11,7 @@ export interface Video {
   likes_count?: number;
   shares_count?: number;
   category_id?: string;
+  isFollowing?: boolean;
   vendor?: {
     business_name: string;
   };
@@ -53,8 +54,15 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       return { data: null, error };
     }
 
-    console.log('Successfully fetched videos:', data);
-    return { data, error: null };
+    // Transform the data to match the Video interface
+    const transformedData = data?.map(video => ({
+      ...video,
+      vendor: video.vendor ? video.vendor[0] : undefined, // Take first vendor if exists
+      isFollowing: false // Default value for isFollowing
+    })) as Video[];
+
+    console.log('Successfully fetched videos:', transformedData);
+    return { data: transformedData, error: null };
   } catch (error) {
     console.error('Error in fetchVideos:', error);
     return { data: null, error: error as PostgrestError };
