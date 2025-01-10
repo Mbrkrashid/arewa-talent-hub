@@ -30,7 +30,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       .from('video_content')
       .select(`
         *,
-        vendor:vendors (
+        vendor:vendors!inner (
           business_name
         )
       `)
@@ -51,7 +51,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     // Transform the data to match the Video interface
     const transformedData = data?.map(video => ({
       ...video,
-      vendor: video.vendor ? video.vendor[0] : undefined,
+      vendor: video.vendor,
       isFollowing: false // Default value for isFollowing
     })) as Video[];
 
