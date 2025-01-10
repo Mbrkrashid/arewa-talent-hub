@@ -29,16 +29,10 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     const { data, error } = await supabase
       .from('video_content')
       .select(`
-        id,
-        title,
-        description,
-        video_url,
-        thumbnail_url,
-        views_count,
-        likes_count,
-        shares_count,
-        category_id,
-        vendor:vendors(business_name)
+        *,
+        vendor:vendors!video_content_vendor_id_fkey (
+          business_name
+        )
       `)
       .order('created_at', { ascending: false });
 
@@ -57,7 +51,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     // Transform the data to match the Video interface
     const transformedData = data?.map(video => ({
       ...video,
-      vendor: video.vendor ? video.vendor[0] : undefined, // Take first vendor if exists
+      vendor: video.vendor ? video.vendor[0] : undefined,
       isFollowing: false // Default value for isFollowing
     })) as Video[];
 
