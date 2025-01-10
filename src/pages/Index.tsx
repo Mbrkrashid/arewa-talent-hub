@@ -1,80 +1,83 @@
-import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Header } from "@/components/Header";
-import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
-import { Session } from "@supabase/supabase-js";
-import type { Video } from "@/services/videoService";
-import { fetchVideos } from "@/services/videoService";
-import { SimpleVideoUpload } from "@/components/upload/SimpleVideoUpload";
-import { VideoGrid } from "@/components/VideoGrid";
+import { VideoCard } from "@/components/VideoCard";
+import { Leaderboard } from "@/components/Leaderboard";
+import { TokenBalance } from "@/components/TokenBalance";
+import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const { toast } = useToast();
-  const [session, setSession] = useState<Session | null>(null);
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [authError, setAuthError] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log("Setting up auth state change listener");
-    
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Current session:", session);
-      setSession(session);
+  const handleVote = () => {
+    toast({
+      title: "Vote Recorded!",
+      description: "You've used 1 token to vote for this talent.",
     });
+  };
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session);
-      setSession(session);
-      
-      if (event === 'SIGNED_IN') {
-        toast({
-          title: "Welcome to Arewa Talent Hub! 🎉",
-          description: "You've successfully signed in",
-        });
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [toast]);
-
-  useEffect(() => {
-    const loadVideos = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await fetchVideos();
-        if (error) throw error;
-        setVideos(data || []);
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load videos",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadVideos();
-  }, [toast]);
-
-  if (!session) {
-    return <RoleAuthUI authError={authError} />;
-  }
+  const mockVideos = [
+    {
+      id: 1,
+      title: "Amazing Dance Performance",
+      artist: "Sarah Johnson",
+      votes: 1234,
+      thumbnailUrl: "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500",
+    },
+    {
+      id: 2,
+      title: "Acoustic Guitar Solo",
+      artist: "Michael Chen",
+      votes: 982,
+      thumbnailUrl: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500",
+    },
+    {
+      id: 3,
+      title: "Stand-up Comedy",
+      artist: "Emma Davis",
+      votes: 879,
+      thumbnailUrl: "https://images.unsplash.com/photo-1525331336235-d3153d8e0de4?w=500",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <Header />
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <header className="border-b bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Web3 Talent Show
+            </h1>
+            <div className="flex items-center gap-4">
+              <TokenBalance />
+              <Button className="bg-primary hover:bg-primary/90">
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Talent
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <main className="container mx-auto px-4 py-8">
-        <SimpleVideoUpload />
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Latest Videos</h2>
-          <VideoGrid videos={videos} loading={loading} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <h2 className="text-xl font-semibold mb-6">Featured Talents</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {mockVideos.map((video) => (
+                <VideoCard
+                  key={video.id}
+                  title={video.title}
+                  artist={video.artist}
+                  votes={video.votes}
+                  thumbnailUrl={video.thumbnailUrl}
+                  onVote={handleVote}
+                />
+              ))}
+            </div>
+          </div>
+          <div>
+            <Leaderboard />
+          </div>
         </div>
       </main>
     </div>

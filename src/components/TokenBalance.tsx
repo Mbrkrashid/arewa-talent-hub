@@ -1,4 +1,4 @@
-import { Diamond } from "lucide-react";
+import { Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -6,61 +6,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/types/supabase";
-
-type TokenWallet = Database['public']['Tables']['token_wallets']['Row'];
 
 export const TokenBalance = () => {
-  const [wallet, setWallet] = useState<TokenWallet | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: walletData, error } = await supabase
-          .from('token_wallets')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (error) {
-          console.error('Error fetching wallet:', error);
-          return;
-        }
-
-        if (walletData) {
-          setWallet(walletData);
-          console.log("Wallet data:", walletData);
-        }
-      } catch (error) {
-        console.error('Error in fetchData:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (!wallet) return null;
-
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="ghost"
-            size="sm"
-            className="bg-[#2b2d31] hover:bg-[#2b2d31]/80"
+            variant="outline"
+            className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20"
           >
-            <Diamond className="h-4 w-4 text-blue-400 mr-2" />
-            <span className="font-medium text-white">{wallet.balance} eNaira</span>
+            <Coins className="h-4 w-4 mr-2 text-primary" />
+            <span className="font-medium">250 Tokens</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Your eNaira balance</p>
+          <p>Your voting power</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
