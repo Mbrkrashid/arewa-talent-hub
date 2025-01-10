@@ -28,12 +28,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
   try {
     const { data, error } = await supabase
       .from('video_content')
-      .select(`
-        *,
-        vendor:vendors!video_content_vendor_id_fkey (
-          business_name
-        )
-      `)
+      .select('*, vendor:vendors(business_name)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -59,7 +54,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       likes_count: video.likes_count,
       shares_count: video.shares_count,
       category_id: video.category_id,
-      vendor: video.vendor || { business_name: "Anonymous" },
+      vendor: video.vendor?.[0] || { business_name: "Anonymous" },
       isFollowing: false
     })) as Video[];
 
