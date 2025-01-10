@@ -26,14 +26,10 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
   console.log('Fetching videos from Supabase...', { attempt });
   
   try {
+    // Simplified query structure
     const { data, error } = await supabase
       .from('video_content')
-      .select(`
-        *,
-        vendor:vendors (
-          business_name
-        )
-      `)
+      .select('*, vendors(business_name)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -41,7 +37,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       
       if (attempt < MAX_RETRIES) {
         console.log(`Retrying... Attempt ${attempt + 1} of ${MAX_RETRIES}`);
-        await sleep(RETRY_DELAY * attempt); // Exponential backoff
+        await sleep(RETRY_DELAY * attempt);
         return fetchVideos(attempt + 1);
       }
       
@@ -51,8 +47,8 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     // Transform the data to match the Video interface
     const transformedData = data?.map(video => ({
       ...video,
-      vendor: video.vendor || { business_name: "Anonymous" },
-      isFollowing: false // Default value for isFollowing
+      vendor: video.vendors || { business_name: "Anonymous" },
+      isFollowing: false
     })) as Video[];
 
     console.log('Successfully fetched videos:', transformedData);
@@ -62,7 +58,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     
     if (attempt < MAX_RETRIES) {
       console.log(`Retrying... Attempt ${attempt + 1} of ${MAX_RETRIES}`);
-      await sleep(RETRY_DELAY * attempt); // Exponential backoff
+      await sleep(RETRY_DELAY * attempt);
       return fetchVideos(attempt + 1);
     }
     
