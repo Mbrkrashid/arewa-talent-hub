@@ -27,7 +27,6 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
   
   try {
     const { data, error } = await supabase
-      .schema('public')
       .from('video_content')
       .select(`
         *,
