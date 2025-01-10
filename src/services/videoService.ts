@@ -10,6 +10,7 @@ export interface Video {
   views_count?: number;
   likes_count?: number;
   shares_count?: number;
+  category_id?: string;
   vendor?: {
     business_name: string;
   };
