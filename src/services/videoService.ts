@@ -38,8 +38,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
         likes_count,
         shares_count,
         category_id,
-        vendor_id,
-        vendors (
+        vendor:vendors (
           business_name
         )
       `)
@@ -68,7 +67,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       likes_count: video.likes_count,
       shares_count: video.shares_count,
       category_id: video.category_id,
-      vendor: video.vendors || { business_name: "Anonymous" },
+      vendor: video.vendor,
       isFollowing: false
     })) as Video[];
 
