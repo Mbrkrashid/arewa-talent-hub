@@ -26,10 +26,23 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
   console.log('Fetching videos from Supabase...', { attempt });
   
   try {
-    // Simplified query structure
     const { data, error } = await supabase
       .from('video_content')
-      .select('*, vendors(business_name)')
+      .select(`
+        id,
+        title,
+        description,
+        video_url,
+        thumbnail_url,
+        views_count,
+        likes_count,
+        shares_count,
+        category_id,
+        vendor_id,
+        vendors (
+          business_name
+        )
+      `)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -46,7 +59,15 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
 
     // Transform the data to match the Video interface
     const transformedData = data?.map(video => ({
-      ...video,
+      id: video.id,
+      title: video.title,
+      description: video.description,
+      video_url: video.video_url,
+      thumbnail_url: video.thumbnail_url,
+      views_count: video.views_count,
+      likes_count: video.likes_count,
+      shares_count: video.shares_count,
+      category_id: video.category_id,
       vendor: video.vendors || { business_name: "Anonymous" },
       isFollowing: false
     })) as Video[];
