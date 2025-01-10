@@ -8,6 +8,7 @@ import { GamificationPanel } from "@/components/gamification/GamificationPanel";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { PrizeDisplay } from "@/components/prizes/PrizeDisplay";
 import { JudgesOverlay } from "@/components/judges/JudgesOverlay";
+import { SponsoredAds } from "@/components/SponsoredAds";
 
 interface MainContentProps {
   videos: any[];
@@ -63,7 +64,7 @@ export const MainContent = ({ videos, loading, showProgress = false }: MainConte
     return (
       <div className="fixed inset-0 bg-black flex items-center justify-center">
         <div className="text-center text-white space-y-4">
-          <h2 className="text-xl font-semibold">No Videos Yet</h2>
+          <h2 className="text-xl font-semibold">Welcome to Arewa Talent Hub</h2>
           <p className="text-gray-400">Be the first to showcase your talent!</p>
         </div>
       </div>
@@ -73,7 +74,12 @@ export const MainContent = ({ videos, loading, showProgress = false }: MainConte
   return (
     <div className="fixed inset-0 bg-black">
       <div className="relative h-full w-full max-w-3xl mx-auto">
-        <div className="h-full overflow-hidden">
+        {/* Sponsored Ads Section */}
+        <div className="absolute top-0 left-0 right-0 z-50">
+          <SponsoredAds />
+        </div>
+
+        <div className="h-full overflow-hidden pt-[200px]">
           <VideoTabs videos={videos} loading={loading} />
         </div>
 
