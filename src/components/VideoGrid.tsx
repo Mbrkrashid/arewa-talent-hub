@@ -8,7 +8,7 @@ interface VideoGridProps {
   viewMode?: "grid" | "scroll";
 }
 
-export const VideoGrid = ({ videos, loading, viewMode = "scroll" }: VideoGridProps) => {
+export const VideoGrid = ({ videos, loading, viewMode = "grid" }: VideoGridProps) => {
   if (loading) {
     return (
       <div className="col-span-2 text-center py-12 text-gray-400">
@@ -30,7 +30,7 @@ export const VideoGrid = ({ videos, loading, viewMode = "scroll" }: VideoGridPro
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
       {videos.map((video) => (
         <VideoCard
           key={video.id}
@@ -40,6 +40,8 @@ export const VideoGrid = ({ videos, loading, viewMode = "scroll" }: VideoGridPro
           votes={video.likes_count || 0}
           thumbnailUrl={video.thumbnail_url || "https://images.unsplash.com/photo-1518834107812-67b0b7c58434?w=500"}
           level={Math.floor((video.likes_count || 0) / 100) + 1}
+          description={video.description}
+          viewsCount={video.views_count}
         />
       ))}
     </div>

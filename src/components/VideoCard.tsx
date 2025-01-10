@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Award, Share2, Star, Trophy, Crown } from "lucide-react";
+import { Heart, MessageCircle, Share2, Star, Trophy, Crown, ThumbsUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,9 +12,20 @@ interface VideoCardProps {
   votes: number;
   thumbnailUrl: string;
   level: number;
+  description?: string;
+  viewsCount?: number;
 }
 
-export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: VideoCardProps) => {
+export const VideoCard = ({ 
+  id, 
+  title, 
+  artist, 
+  votes, 
+  thumbnailUrl, 
+  level,
+  description,
+  viewsCount = 0
+}: VideoCardProps) => {
   const [isVoting, setIsVoting] = useState(false);
   const [voteCount, setVoteCount] = useState(votes);
   const { toast } = useToast();
@@ -55,7 +66,7 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
         .insert({ video_id: id, user_id: user.id });
 
       if (voteError) {
-        if (voteError.code === '23505') { // Unique violation
+        if (voteError.code === '23505') {
           toast({
             title: "Already voted",
             description: "You have already voted for this video",
@@ -71,7 +82,7 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
         .from('token_wallets')
         .update({ 
           balance: wallet.balance - 1,
-          total_spent: (wallet.total_spent || 0) + 1 // Handle case where total_spent might be null
+          total_spent: (wallet.total_spent || 0) + 1
         })
         .eq('user_id', user.id);
 
@@ -94,6 +105,16 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
     }
   };
 
+  const formatCount = (count: number): string => {
+    if (count >= 1000000) {
+      return `${(count / 1000000).toFixed(1)}M`;
+    }
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}K`;
+    }
+    return count.toString();
+  };
+
   const getLevelBadge = (level: number) => {
     switch (level) {
       case 5:
@@ -101,51 +122,66 @@ export const VideoCard = ({ id, title, artist, votes, thumbnailUrl, level }: Vid
       case 4:
         return <Trophy className="h-4 w-4 text-purple-500 animate-pulse" />;
       case 3:
-        return <Award className="h-4 w-4 text-blue-500 animate-pulse" />;
+        return <Star className="h-4 w-4 text-blue-500 animate-pulse" />;
       default:
         return <Star className="h-4 w-4 text-gray-500" />;
     }
   };
 
   return (
-    <Card className="overflow-hidden transition-all hover:scale-[1.02] duration-300 bg-black/50 border-primary/20 rounded-lg">
-      <div className="relative aspect-[9/16] group">
+    <Card className="overflow-hidden bg-black/50 border-primary/20 rounded-lg hover:bg-black/60 transition-all duration-300">
+      <div className="relative aspect-video group">
         <img
           src={thumbnailUrl}
           alt={title}
-          className="w-full h-full object-cover rounded-t-lg"
+          className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-          <h3 className="text-white font-semibold truncate text-lg">{title}</h3>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-white/80 text-sm">{artist}</p>
-            <div className="flex items-center gap-1">
-              {getLevelBadge(level)}
-              <span className="text-xs text-gray-400">Level {level}</span>
+      </div>
+      
+      <div className="p-4 space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+            {getLevelBadge(level)}
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-white line-clamp-2">{title}</h3>
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <span>{artist}</span>
+              <span>•</span>
+              <span>{formatCount(viewsCount)} views</span>
             </div>
+            {description && (
+              <p className="text-sm text-gray-400 mt-2 line-clamp-2">{description}</p>
+            )}
           </div>
         </div>
-      </div>
-      <div className="p-3 flex items-center justify-between bg-black/40">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`hover:text-primary ${isVoting ? 'animate-pulse' : ''}`}
-            onClick={handleVote}
-            disabled={isVoting}
-          >
-            <Heart className="h-5 w-5" />
-          </Button>
-          <span className="text-sm font-medium text-white">{voteCount}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-white/80 hover:text-primary">
-            <Award className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-white/80 hover:text-primary">
-            <Share2 className="h-5 w-5" />
+
+        <div className="flex items-center justify-between pt-2 border-t border-white/10">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`flex items-center gap-2 ${isVoting ? 'animate-pulse' : ''}`}
+              onClick={handleVote}
+              disabled={isVoting}
+            >
+              <ThumbsUp className="h-4 w-4" />
+              <span>{formatCount(voteCount)}</span>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>Comment</span>
+            </Button>
+          </div>
+
+          <Button variant="ghost" size="sm" className="text-white/80 hover:text-primary">
+            <Share2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
