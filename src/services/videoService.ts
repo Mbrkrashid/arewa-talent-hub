@@ -30,7 +30,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       .from('video_content')
       .select(`
         *,
-        vendor:vendors!video_content_vendor_id_fkey (
+        vendor:vendors (
           business_name
         )
       `)
