@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
-import { MainContent } from "@/components/MainContent";
 import { RoleAuthUI } from "@/components/auth/RoleAuthUI";
 import { Session } from "@supabase/supabase-js";
 import type { Video } from "@/services/videoService";
 import { fetchVideos } from "@/services/videoService";
+import { SimpleVideoUpload } from "@/components/upload/SimpleVideoUpload";
+import { VideoGrid } from "@/components/VideoGrid";
 
 const Index = () => {
   const { toast } = useToast();
@@ -44,27 +45,14 @@ const Index = () => {
     const loadVideos = async () => {
       try {
         setLoading(true);
-        console.log("Fetching videos from database...");
-        
         const { data, error } = await fetchVideos();
-
-        if (error) {
-          console.error('Error fetching videos:', error);
-          toast({
-            title: "Error",
-            description: "Failed to load videos. Please try again later.",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        console.log("Fetched videos:", data);
+        if (error) throw error;
         setVideos(data || []);
       } catch (error) {
         console.error('Error fetching videos:', error);
         toast({
           title: "Error",
-          description: "Failed to load videos. Please try again later.",
+          description: "Failed to load videos",
           variant: "destructive",
         });
       } finally {
@@ -80,10 +68,14 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-hidden bg-black">
+    <div className="min-h-screen bg-black text-white">
       <Header />
-      <main className="container mx-auto px-4">
-        <MainContent videos={videos} loading={loading} showProgress={false} />
+      <main className="container mx-auto px-4 py-8">
+        <SimpleVideoUpload />
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Latest Videos</h2>
+          <VideoGrid videos={videos} loading={loading} />
+        </div>
       </main>
     </div>
   );
