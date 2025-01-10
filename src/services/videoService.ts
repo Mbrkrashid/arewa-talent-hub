@@ -41,7 +41,7 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
       
       if (attempt < MAX_RETRIES) {
         console.log(`Retrying... Attempt ${attempt + 1} of ${MAX_RETRIES}`);
-        await sleep(RETRY_DELAY);
+        await sleep(RETRY_DELAY * attempt); // Exponential backoff
         return fetchVideos(attempt + 1);
       }
       
@@ -59,6 +59,13 @@ export const fetchVideos = async (attempt = 1): Promise<{ data: Video[] | null; 
     return { data: transformedData, error: null };
   } catch (error) {
     console.error('Error in fetchVideos:', error);
+    
+    if (attempt < MAX_RETRIES) {
+      console.log(`Retrying... Attempt ${attempt + 1} of ${MAX_RETRIES}`);
+      await sleep(RETRY_DELAY * attempt); // Exponential backoff
+      return fetchVideos(attempt + 1);
+    }
+    
     return { data: null, error: error as PostgrestError };
   }
 };
