@@ -1,15 +1,31 @@
 import { VideoCard } from "@/components/VideoCard";
 import { Leaderboard } from "@/components/Leaderboard";
-import { TokenBalance } from "@/components/TokenBalance";
 import { Button } from "@/components/ui/button";
-import { Upload, TrendingUp, Trophy, Timer } from "lucide-react";
+import { Upload, TrendingUp } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { PrizePool } from "@/components/PrizePool";
 import { CountdownTimer } from "@/components/CountdownTimer";
+import { Header } from "@/components/layout/Header";
+import { FounderInfo } from "@/components/founder/FounderInfo";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/auth');
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
 
   const handleVote = () => {
     toast({
@@ -44,32 +60,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-secondary/5">
-      <header className="border-b bg-white/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Arewa Talent Hub
-            </h1>
-            <div className="flex items-center gap-4">
-              <TokenBalance />
-              <Button className="bg-primary hover:bg-primary/90">
-                <Upload className="h-4 w-4 mr-2" />
-                Upload Talent
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="p-6 bg-gradient-to-br from-primary/10 to-secondary/10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Timer className="h-6 w-6 text-primary" />
-                  <h2 className="text-xl font-semibold">Competition Ends In</h2>
-                </div>
                 <CountdownTimer targetDate="2024-04-01" />
               </Card>
               <PrizePool />
@@ -98,6 +95,8 @@ const Index = () => {
                 ))}
               </div>
             </div>
+            
+            <FounderInfo />
           </div>
           <div className="space-y-6">
             <Leaderboard />
