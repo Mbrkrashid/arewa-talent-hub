@@ -27,7 +27,7 @@ const AuthPage = () => {
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
-            providers={['tiktok']}
+            providers={['tiktok' as any]} // Temporary type assertion until provider type is updated
             redirectTo={window.location.origin}
           />
         </div>
