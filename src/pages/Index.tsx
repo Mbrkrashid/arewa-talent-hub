@@ -2,8 +2,11 @@ import { VideoCard } from "@/components/VideoCard";
 import { Leaderboard } from "@/components/Leaderboard";
 import { TokenBalance } from "@/components/TokenBalance";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Upload, TrendingUp, Trophy, Timer } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
+import { PrizePool } from "@/components/PrizePool";
+import { CountdownTimer } from "@/components/CountdownTimer";
 
 const Index = () => {
   const { toast } = useToast();
@@ -40,12 +43,12 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-secondary/5">
       <header className="border-b bg-white/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Web3 Talent Show
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Arewa Talent Hub
             </h1>
             <div className="flex items-center gap-4">
               <TokenBalance />
@@ -60,22 +63,43 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <h2 className="text-xl font-semibold mb-6">Featured Talents</h2>
+          <div className="lg:col-span-2 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {mockVideos.map((video) => (
-                <VideoCard
-                  key={video.id}
-                  title={video.title}
-                  artist={video.artist}
-                  votes={video.votes}
-                  thumbnailUrl={video.thumbnailUrl}
-                  onVote={handleVote}
-                />
-              ))}
+              <Card className="p-6 bg-gradient-to-br from-primary/10 to-secondary/10">
+                <div className="flex items-center gap-3 mb-4">
+                  <Timer className="h-6 w-6 text-primary" />
+                  <h2 className="text-xl font-semibold">Competition Ends In</h2>
+                </div>
+                <CountdownTimer targetDate="2024-04-01" />
+              </Card>
+              <PrizePool />
+            </div>
+            
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  Trending Talents
+                </h2>
+                <Button variant="outline" className="text-primary">
+                  View All
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {mockVideos.map((video) => (
+                  <VideoCard
+                    key={video.id}
+                    title={video.title}
+                    artist={video.artist}
+                    votes={video.votes}
+                    thumbnailUrl={video.thumbnailUrl}
+                    onVote={handleVote}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-          <div>
+          <div className="space-y-6">
             <Leaderboard />
           </div>
         </div>
