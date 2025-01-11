@@ -133,6 +133,33 @@ export type Database = {
         }
         Relationships: []
       }
+      app_info: {
+        Row: {
+          created_at: string | null
+          founder_bio: string | null
+          founder_image_url: string | null
+          founder_name: string
+          founder_title: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          founder_bio?: string | null
+          founder_image_url?: string | null
+          founder_name: string
+          founder_title?: string | null
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          founder_bio?: string | null
+          founder_image_url?: string | null
+          founder_name?: string
+          founder_title?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       background_music: {
         Row: {
           artist: string | null
@@ -670,6 +697,9 @@ export type Database = {
           notification_preferences: Json | null
           participant_level: number | null
           role: string | null
+          tiktok_access_token: string | null
+          tiktok_id: string | null
+          tiktok_username: string | null
           total_points: number | null
           total_votes: number | null
           updated_at: string
@@ -683,6 +713,9 @@ export type Database = {
           notification_preferences?: Json | null
           participant_level?: number | null
           role?: string | null
+          tiktok_access_token?: string | null
+          tiktok_id?: string | null
+          tiktok_username?: string | null
           total_points?: number | null
           total_votes?: number | null
           updated_at?: string
@@ -696,6 +729,9 @@ export type Database = {
           notification_preferences?: Json | null
           participant_level?: number | null
           role?: string | null
+          tiktok_access_token?: string | null
+          tiktok_id?: string | null
+          tiktok_username?: string | null
           total_points?: number | null
           total_votes?: number | null
           updated_at?: string
@@ -934,6 +970,45 @@ export type Database = {
           priority?: string | null
           status?: string | null
           subject?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tiktok_campaigns: {
+        Row: {
+          budget: number | null
+          campaign_name: string
+          created_at: string | null
+          end_date: string | null
+          id: string
+          metrics: Json | null
+          start_date: string | null
+          status: string | null
+          targeting: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          budget?: number | null
+          campaign_name: string
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          metrics?: Json | null
+          start_date?: string | null
+          status?: string | null
+          targeting?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          budget?: number | null
+          campaign_name?: string
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          metrics?: Json | null
+          start_date?: string | null
+          status?: string | null
+          targeting?: Json | null
           updated_at?: string | null
         }
         Relationships: []
