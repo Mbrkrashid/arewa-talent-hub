@@ -7,10 +7,14 @@ export const FounderInfo = () => {
   const { data: founder, isLoading, error } = useQuery({
     queryKey: ['founderInfo'],
     queryFn: async () => {
+      console.log('Fetching founder info...');
       const { data, error } = await supabase
         .from('app_info')
         .select('*')
-        .single();
+        .limit(1)
+        .maybeSingle();
+      
+      console.log('Founder info response:', { data, error });
       
       if (error) throw error;
       return data;
@@ -32,6 +36,7 @@ export const FounderInfo = () => {
   }
 
   if (error) {
+    console.error('Error loading founder info:', error);
     return (
       <Alert variant="destructive">
         <AlertDescription>
