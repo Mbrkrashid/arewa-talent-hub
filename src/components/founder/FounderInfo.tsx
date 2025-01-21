@@ -9,6 +9,7 @@ export const FounderInfo = () => {
     queryFn: async () => {
       console.log('Fetching founder info...');
       const { data, error } = await supabase
+        .schema('public')
         .from('app_info')
         .select('*')
         .limit(1)
